@@ -17,4 +17,7 @@
     <string name="addingInTheEnd">Adding in the end</string>
     <string name="addingInTheMiddle">Adding in the middle</string>
     <string name="addingInTheBeginning">Adding in the beginning</string>
+    <string name="addingNew">Adding new</string>
+    <string name="searchByKey">Search by key</string>
+    <string name="removing">Removing</string>
 </resources>

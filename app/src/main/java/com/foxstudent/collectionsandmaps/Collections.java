@@ -65,6 +65,9 @@ public class Collections {
             map.put(i,0);
         }
         long startTime = System.currentTimeMillis();
+        for (int i = 0; i < map.size(); i++) {
+            map.get(i);
+        }
         int min = 0;
         int max = value;
         int index = (int)(Math.random()*(max - min + 1) + min);
@@ -114,10 +117,9 @@ public class Collections {
             map.put(i,0);
         }
         long startTime = System.currentTimeMillis();
-        int min = 0;
-        int max = value;
-        int index = (int)(Math.random()*(max - min + 1) + min);
-        map.remove(index);
+        for (int i = 0; i < map.size(); i++) {
+            map.remove(i);
+        }
         long endTime = System.currentTimeMillis();
         time = endTime - startTime;
     }

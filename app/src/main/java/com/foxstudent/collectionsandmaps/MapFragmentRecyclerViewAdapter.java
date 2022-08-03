@@ -16,7 +16,6 @@ public class MapFragmentRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 
     private List<Cell> mData;
     private LayoutInflater mInflater;
-    private boolean progressBarVisibility = true;
     static final int TYPE_HEADER = 0;
     static final int TYPE_ITEM = 1;
 
@@ -44,7 +43,7 @@ public class MapFragmentRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
             case TYPE_ITEM:
                 ViewHolderItem viewHolderItem = (ViewHolderItem)holder;
                 viewHolderItem.collection.setText(mData.get(position).getName());
-                if(progressBarVisibility){
+                if(mData.get(position).getResult()==null){
                     viewHolderItem.progressBar.setVisibility(View.VISIBLE);
                     viewHolderItem.runtime.setVisibility(View.GONE);
                 }else{
@@ -57,11 +56,11 @@ public class MapFragmentRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
             case TYPE_HEADER:
                 ViewHolderHeader viewHolderHeader = (ViewHolderHeader)holder;
                 if(position == 0){
-                    viewHolderHeader.operation.setText("Adding new");
+                    viewHolderHeader.operation.setText(R.string.addingNew);
                 }else if(position == 3){
-                    viewHolderHeader.operation.setText("Search by key");
+                    viewHolderHeader.operation.setText(R.string.searchByKey);
                 }else if(position == 6){
-                    viewHolderHeader.operation.setText("Removing");
+                    viewHolderHeader.operation.setText(R.string.removing);
                 }
                 break;
         }
@@ -80,10 +79,6 @@ public class MapFragmentRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
             return TYPE_HEADER;
         }
         return TYPE_ITEM;
-    }
-
-    public void setProgressBarVisibility(boolean progressBarVisibility){
-        this.progressBarVisibility = progressBarVisibility;
     }
 
     private boolean isPositionHeader(int position) {

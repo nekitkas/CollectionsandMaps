@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +20,8 @@ import com.foxstudent.collectionsandmaps.databinding.FragmentMapBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import androidx.lifecycle.ViewModelProvider;
 
 
@@ -64,6 +67,15 @@ public class MapFragment extends Fragment {
         recyclerView.setLayoutManager(manager);
         mRecyclerViewAdapter = new MapFragmentRecyclerViewAdapter(getContext(),data);
         recyclerView.setAdapter(mRecyclerViewAdapter);
+
+        LiveData<Map<Integer,String>> dataModel = model.getCollectionData();
+
+        dataModel.observe(requireActivity(), stringStringMap -> {
+            for (int i = 0; i < data.size(); i++) {
+                data.get(i).setResult(stringStringMap.get(i));
+                mRecyclerViewAdapter.notifyItemChanged(i);
+            }
+        });
 
 
         return fragmentMapBinding.getRoot();

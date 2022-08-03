@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         activityMainBinding.btnClear.setOnClickListener(v -> {
+            model.shutDown();
             finish();
             startActivity(getIntent());
             });

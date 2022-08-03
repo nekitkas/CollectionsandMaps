@@ -16,17 +16,12 @@ public class CollectionFragmentRecyclerViewAdapter extends RecyclerView.Adapter<
 
     private List<Cell> mData;
     private LayoutInflater mInflater;
-    private boolean progressBarVisibility = true;
     static final int TYPE_HEADER = 0;
     static final int TYPE_ITEM = 1;
 
     CollectionFragmentRecyclerViewAdapter(Context context, List<Cell> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
-    }
-
-    public void setProgressBarVisibility(boolean progressBarVisibility){
-        this.progressBarVisibility = progressBarVisibility;
     }
 
     @Override
@@ -48,7 +43,7 @@ public class CollectionFragmentRecyclerViewAdapter extends RecyclerView.Adapter<
             case TYPE_ITEM:
                 ViewHolderItem viewHolderItem = (ViewHolderItem)holder;
                 viewHolderItem.collection.setText(mData.get(position).getName());
-                if(progressBarVisibility){
+                if(mData.get(position).getResult()==null){
                     viewHolderItem.progressBar.setVisibility(View.VISIBLE);
                     viewHolderItem.runtime.setVisibility(View.GONE);
                 }else{
