@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.foxstudent.collectionsandmaps.databinding.ActivityMainBinding;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -51,8 +52,14 @@ public class MainActivity extends AppCompatActivity {
         }).attach();
 
         activityMainBinding.btnCalculate.setOnClickListener(view -> {
-            inputValue = activityMainBinding.etInput.getText().toString();
-            model.setInputValue(inputValue);
+
+            inputValue = activityMainBinding.etInput.getText().toString().trim();
+            if(inputValue.isEmpty()){
+                Toast.makeText(this,"Enter an integer value",Toast.LENGTH_LONG).show();
+                return;
+            }else{
+                model.setInputValue(inputValue);
+            }
 
             activityMainBinding.startLayout.setVisibility(View.GONE);
             activityMainBinding.viewPager2.setVisibility(View.VISIBLE);

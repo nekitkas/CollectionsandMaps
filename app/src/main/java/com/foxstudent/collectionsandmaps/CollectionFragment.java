@@ -16,7 +16,9 @@ import android.view.ViewGroup;
 import com.foxstudent.collectionsandmaps.databinding.FragmentCollectionBinding;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CollectionFragment extends Fragment {
 
@@ -92,23 +94,41 @@ public class CollectionFragment extends Fragment {
         });*/
 
         model.getCollectionData().observe(getViewLifecycleOwner(),result ->{
-            data.get(1).setResult(result.get(1));
-            mRecyclerViewAdapter.setProgressBarVisibility(false);
-            mRecyclerViewAdapter.notifyItemChanged(1);
-            Log.d(TAG, "FIRST CELL " + " " + result.get(1));
+                data.get(1).setResult(result.get(1));
+                mRecyclerViewAdapter.setProgressBarVisibility(false);
+                mRecyclerViewAdapter.notifyItemChanged(1);
+                Log.d(TAG, "FIRST CELL " + " " + result.get(1));
                 });
         model.getCollectionData().observe(getViewLifecycleOwner(),result -> {
-            data.get(2).setResult(result.get(2));
-            mRecyclerViewAdapter.setProgressBarVisibility(false);
-            mRecyclerViewAdapter.notifyItemChanged(2);
-            Log.d(TAG, "SECOND CELL: " + " " + result.get(2));
+                data.get(2).setResult(result.get(2));
+                mRecyclerViewAdapter.setProgressBarVisibility(false);
+                mRecyclerViewAdapter.notifyItemChanged(2);
+                Log.d(TAG, "SECOND CELL: " + " " + result.get(2));
                 });
         model.getCollectionData().observe(getViewLifecycleOwner(),result -> {
-            data.get(3).setResult(result.get(3));
-            mRecyclerViewAdapter.setProgressBarVisibility(false);
-            mRecyclerViewAdapter.notifyItemChanged(3);
-            Log.d(TAG, "THIRD CELL: " + " " + result.get(3));
+                data.get(3).setResult(result.get(3));
+                mRecyclerViewAdapter.setProgressBarVisibility(false);
+                mRecyclerViewAdapter.notifyItemChanged(3);
+                Log.d(TAG, "THIRD CELL: " + " " + result.get(3));
                 });
+        model.getCollectionData().observe(getViewLifecycleOwner(),result ->{
+                data.get(5).setResult(result.get(5));
+                mRecyclerViewAdapter.setProgressBarVisibility(false);
+                mRecyclerViewAdapter.notifyItemChanged(5);
+                Log.d(TAG, "FIFTH CELL " + " " + result.get(5));
+        });
+        model.getCollectionData().observe(getViewLifecycleOwner(),result -> {
+                data.get(6).setResult(result.get(6));
+                mRecyclerViewAdapter.setProgressBarVisibility(false);
+                mRecyclerViewAdapter.notifyItemChanged(6);
+                Log.d(TAG, "SIXTH CELL: " + " " + result.get(6));
+        });
+        model.getCollectionData().observe(getViewLifecycleOwner(),result -> {
+                data.get(7).setResult(result.get(7));
+                mRecyclerViewAdapter.setProgressBarVisibility(false);
+                mRecyclerViewAdapter.notifyItemChanged(7);
+                Log.d(TAG, "SEVENTH CELL: " + " " + result.get(7));
+        });
 
         return fragmentCollectionBinding.getRoot();
     }

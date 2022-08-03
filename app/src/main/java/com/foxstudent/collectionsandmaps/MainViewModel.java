@@ -81,6 +81,27 @@ public class MainViewModel extends ViewModel {
             Log.d(TAG, "setData: copyOnWriteListAddInTheBeginning " + " " + collections.getTime());
             collectionData.postValue(time);
         });
+        service.execute(() -> {
+            Collections collections = new Collections(new ArrayList<>(),value);
+            collections.arrayListAddInTheMiddle();
+            time.put(5, collections.getTime());
+            Log.d(TAG, "setData: arrayListAddInTheMiddle " + " " + collections.getTime());
+            collectionData.postValue(time);
+        });
+        service.execute(()->{
+            Collections collections = new Collections(new LinkedList<>(),value);
+            collections.linkedListAddInTheMiddle();
+            time.put(6, collections.getTime());
+            Log.d(TAG, "setData: linkedListAddInTheMiddle " + " " + collections.getTime());
+            collectionData.postValue(time);
+        });
+        service.execute(()->{
+            Collections collections = new Collections(new CopyOnWriteArrayList<>(),value);
+            collections.copyOnWriteListAddInTheMiddle();
+            time.put(7, collections.getTime());
+            Log.d(TAG, "setData: copyOnWriteListAddInTheMiddle " + " " + collections.getTime());
+            collectionData.postValue(time);
+        });
         service.shutdown();
     }
 
