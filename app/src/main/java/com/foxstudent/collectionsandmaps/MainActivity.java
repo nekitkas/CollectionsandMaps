@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     private StateAdapter mStateAdapter;
     private ActivityMainBinding activityMainBinding;
+    private String inputValue;
 
 
     @Override
@@ -23,6 +24,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(activityMainBinding.getRoot());
 
         MainViewModel model = new ViewModelProvider(this).get(MainViewModel.class);
+
+        model.getInputValue().observe(this,input->{
+            activityMainBinding.etInput.setText(input);
+        });
 
         model.getIsVisible().observe(this,isVisible->{
             if(isVisible) {
@@ -46,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         }).attach();
 
         activityMainBinding.btnCalculate.setOnClickListener(view -> {
+            inputValue = activityMainBinding.etInput.getText().toString();
+            model.setInputValue(inputValue);
+
             activityMainBinding.startLayout.setVisibility(View.GONE);
             activityMainBinding.viewPager2.setVisibility(View.VISIBLE);
             activityMainBinding.buttonPanel.setVisibility(View.VISIBLE);

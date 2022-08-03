@@ -31,7 +31,7 @@ public class CollectionFragment extends Fragment {
                              Bundle savedInstanceState) {
         fragmentCollectionBinding = FragmentCollectionBinding.inflate(inflater, container, false);
 
-        CollectionFragmentViewModel model = new ViewModelProvider(requireActivity()).get(CollectionFragmentViewModel.class);
+        MainViewModel model = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
         RecyclerView recyclerView = fragmentCollectionBinding.rvGrid;
 
@@ -91,19 +91,19 @@ public class CollectionFragment extends Fragment {
             }
         });*/
 
-        model.getData().observe(getViewLifecycleOwner(),result ->{
+        model.getCollectionData().observe(getViewLifecycleOwner(),result ->{
             data.get(1).setResult(result.get(1));
             mRecyclerViewAdapter.setProgressBarVisibility(false);
             mRecyclerViewAdapter.notifyItemChanged(1);
             Log.d(TAG, "FIRST CELL " + " " + result.get(1));
                 });
-        model.getData().observe(getViewLifecycleOwner(),result -> {
+        model.getCollectionData().observe(getViewLifecycleOwner(),result -> {
             data.get(2).setResult(result.get(2));
             mRecyclerViewAdapter.setProgressBarVisibility(false);
             mRecyclerViewAdapter.notifyItemChanged(2);
             Log.d(TAG, "SECOND CELL: " + " " + result.get(2));
                 });
-        model.getData().observe(getViewLifecycleOwner(),result -> {
+        model.getCollectionData().observe(getViewLifecycleOwner(),result -> {
             data.get(3).setResult(result.get(3));
             mRecyclerViewAdapter.setProgressBarVisibility(false);
             mRecyclerViewAdapter.notifyItemChanged(3);

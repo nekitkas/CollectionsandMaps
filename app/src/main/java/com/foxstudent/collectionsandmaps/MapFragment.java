@@ -35,7 +35,7 @@ public class MapFragment extends Fragment {
                              Bundle savedInstanceState) {
         fragmentMapBinding = FragmentMapBinding.inflate(inflater, container, false);
 
-        MapFragmentViewModel model = new ViewModelProvider(requireActivity()).get(MapFragmentViewModel.class);
+        MainViewModel model = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
         RecyclerView recyclerView = fragmentMapBinding.rvGrid;
 
