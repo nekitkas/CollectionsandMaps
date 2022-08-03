@@ -1,7 +1,5 @@
 package com.foxstudent.collectionsandmaps;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -9,7 +7,6 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -22,9 +19,9 @@ public class MainViewModel extends ViewModel {
     private final String TAG = "MainViewModel";
     private MutableLiveData<Boolean> isVisible;
     private MutableLiveData<Map<Integer,String>> collectionData;
-    private MutableLiveData<List<String>> mapData;
+    private MutableLiveData<Map<Integer,String>> mapData;
     private MutableLiveData<String> inputValue;
-    private final ExecutorService service = Executors.newFixedThreadPool(28);
+    private final ExecutorService service = Executors.newFixedThreadPool(30);
 
     public void shutDown(){
         service.shutdownNow();
@@ -191,10 +188,9 @@ public class MainViewModel extends ViewModel {
             time.put(27, collections.getTime());
             collectionData.postValue(time);
         });
-        service.shutdown();
     }
 
-    public LiveData<List<String>> getMapData(){
+    public LiveData<Map<Integer,String>> getMapData(){
         if(mapData == null){
             mapData = new MutableLiveData<>();
             setMapData();
@@ -209,39 +205,37 @@ public class MainViewModel extends ViewModel {
             Collections collections = new Collections(new TreeMap<>(),value);
             collections.treeMapAddingNew();
             time.put(1, collections.getTime());
-            collectionData.postValue(time);
+            mapData.postValue(time);
         });
         service.execute(()->{
             Collections collections = new Collections(new HashMap<>(),value);
             collections.hashMapAddingNew();
             time.put(2, collections.getTime());
-            collectionData.postValue(time);
+            mapData.postValue(time);
         });
         service.execute(()->{
             Collections collections = new Collections(new TreeMap<>(),value);
             collections.treeMapSearchByKey();
             time.put(4, collections.getTime());
-            collectionData.postValue(time);
+            mapData.postValue(time);
         });
         service.execute(() -> {
             Collections collections = new Collections(new HashMap<>(),value);
             collections.hashMapSearchByKey();
             time.put(5, collections.getTime());
-            collectionData.postValue(time);
+            mapData.postValue(time);
         });
         service.execute(()->{
             Collections collections = new Collections(new TreeMap<>(),value);
             collections.treeMapRemoving();
             time.put(7, collections.getTime());
-            collectionData.postValue(time);
+            mapData.postValue(time);
         });
         service.execute(()->{
             Collections collections = new Collections(new HashMap<>(),value);
             collections.hashMapRemoving();
             time.put(8, collections.getTime());
-            collectionData.postValue(time);
+            mapData.postValue(time);
         });
-        service.shutdown();
-
     }
 }

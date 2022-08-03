@@ -24,11 +24,10 @@ import java.util.Map;
 
 public class CollectionFragment extends Fragment {
 
-    private static final String TAG = "CollectionFragment";
     private CollectionFragmentRecyclerViewAdapter mRecyclerViewAdapter;
     private FragmentCollectionBinding fragmentCollectionBinding;
     private List<Cell> data;
-
+    private static final String TAG = "CollectionFragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -73,6 +72,7 @@ public class CollectionFragment extends Fragment {
             for (int i = 0; i < data.size(); i++) {
                     data.get(i).setResult(stringStringMap.get(i));
                     mRecyclerViewAdapter.notifyItemChanged(i);
+                    Log.d(TAG, "onCreateView: " + data.get(i).getResult());
             }
         });
 

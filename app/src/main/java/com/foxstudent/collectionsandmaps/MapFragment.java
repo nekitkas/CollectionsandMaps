@@ -24,8 +24,6 @@ import java.util.Map;
 
 import androidx.lifecycle.ViewModelProvider;
 
-
-
 public class MapFragment extends Fragment {
 
     private MapFragmentRecyclerViewAdapter mRecyclerViewAdapter;
@@ -49,6 +47,7 @@ public class MapFragment extends Fragment {
             data.add(new Cell("TreeMap"));
             data.add(new Cell("HashMap"));
         }
+
         int numberOfColumns = 2;
         GridLayoutManager manager = new GridLayoutManager(getContext(),numberOfColumns);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
@@ -68,15 +67,15 @@ public class MapFragment extends Fragment {
         mRecyclerViewAdapter = new MapFragmentRecyclerViewAdapter(getContext(),data);
         recyclerView.setAdapter(mRecyclerViewAdapter);
 
-        LiveData<Map<Integer,String>> dataModel = model.getCollectionData();
+        LiveData<Map<Integer,String>> dataModel = model.getMapData();
 
         dataModel.observe(requireActivity(), stringStringMap -> {
             for (int i = 0; i < data.size(); i++) {
                 data.get(i).setResult(stringStringMap.get(i));
                 mRecyclerViewAdapter.notifyItemChanged(i);
+                Log.d(TAG, "onCreateView: " + data.get(i).getResult());
             }
         });
-
 
         return fragmentMapBinding.getRoot();
     }
