@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,10 +25,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 public class MapFragment extends Fragment {
 
-    private MapFragmentRecyclerViewAdapter mRecyclerViewAdapter;
+    private MapFragmentRecyclerViewAdapter recyclerViewAdapter;
     private FragmentMapBinding fragmentMapBinding;
     private List<Cell> data;
-    private final String  TAG = "MapFragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -38,22 +36,19 @@ public class MapFragment extends Fragment {
 
         MainViewModel model = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
-        RecyclerView recyclerView = fragmentMapBinding.rvGrid;
-
-
+        LiveData<List<Cell>> dataCell = model.getMapCell();
         data = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            data.add(new Cell()); // header
-            data.add(new Cell("TreeMap"));
-            data.add(new Cell("HashMap"));
-        }
 
-        int numberOfColumns = 2;
-        GridLayoutManager manager = new GridLayoutManager(getContext(),numberOfColumns);
+        dataCell.observe(requireActivity(),cells -> {
+            data.addAll(cells);
+        });
+
+
+        GridLayoutManager manager = new GridLayoutManager(getContext(),2);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
             @Override
             public int getSpanSize(int position) {
-                switch(mRecyclerViewAdapter.getItemViewType(position)){
+                switch(recyclerViewAdapter.getItemViewType(position)){
                     case MapFragmentRecyclerViewAdapter.TYPE_HEADER:
                         return 2;
                     case MapFragmentRecyclerViewAdapter.TYPE_ITEM:
@@ -63,17 +58,17 @@ public class MapFragment extends Fragment {
                 }
             }
         });
-        recyclerView.setLayoutManager(manager);
-        mRecyclerViewAdapter = new MapFragmentRecyclerViewAdapter(getContext(),data);
-        recyclerView.setAdapter(mRecyclerViewAdapter);
+
+        fragmentMapBinding.rvGrid.setLayoutManager(manager);
+        recyclerViewAdapter = new MapFragmentRecyclerViewAdapter(getContext(),data);
+        fragmentMapBinding.rvGrid.setAdapter(recyclerViewAdapter);
 
         LiveData<Map<Integer,String>> dataModel = model.getMapData();
 
         dataModel.observe(requireActivity(), stringStringMap -> {
             for (int i = 0; i < data.size(); i++) {
                 data.get(i).setResult(stringStringMap.get(i));
-                mRecyclerViewAdapter.notifyItemChanged(i);
-                Log.d(TAG, "onCreateView: " + data.get(i).getResult());
+                recyclerViewAdapter.notifyItemChanged(i);
             }
         });
 

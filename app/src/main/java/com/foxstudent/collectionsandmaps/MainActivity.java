@@ -13,7 +13,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class MainActivity extends AppCompatActivity {
 
-    private StateAdapter mStateAdapter;
+    private StateAdapter stateAdapter;
     private ActivityMainBinding activityMainBinding;
     private String inputValue;
 
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         model.getIsVisible().observe(this,isVisible->{
             if(isVisible) {
+                activityMainBinding.tabLayout.setVisibility(View.VISIBLE);
                 activityMainBinding.startLayout.setVisibility(View.GONE);
                 activityMainBinding.viewPager2.setVisibility(View.VISIBLE);
                 activityMainBinding.buttonPanel.setVisibility(View.VISIBLE);
@@ -41,14 +42,14 @@ public class MainActivity extends AppCompatActivity {
         CollectionFragment collectionFragment = new CollectionFragment();
         MapFragment mapFragment = new MapFragment();
 
-        mStateAdapter = new StateAdapter(getSupportFragmentManager(),getLifecycle());
+        stateAdapter = new StateAdapter(getSupportFragmentManager(),getLifecycle());
 
-        mStateAdapter.addFragment(collectionFragment,"Collection");
-        mStateAdapter.addFragment(mapFragment,"Map");
+        stateAdapter.addFragment(collectionFragment,"Collection");
+        stateAdapter.addFragment(mapFragment,"Map");
 
-        activityMainBinding.viewPager2.setAdapter(mStateAdapter);
+        activityMainBinding.viewPager2.setAdapter(stateAdapter);
         new TabLayoutMediator(activityMainBinding.tabLayout,activityMainBinding.viewPager2,(tab, position) -> {
-            tab.setText(mStateAdapter.getName(position));
+            tab.setText(stateAdapter.getName(position));
         }).attach();
 
         activityMainBinding.btnCalculate.setOnClickListener(view -> {
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             activityMainBinding.startLayout.setVisibility(View.GONE);
+            activityMainBinding.tabLayout.setVisibility(View.VISIBLE);
             activityMainBinding.viewPager2.setVisibility(View.VISIBLE);
             activityMainBinding.buttonPanel.setVisibility(View.VISIBLE);
             model.setIsVisible(true);

@@ -14,24 +14,24 @@ import java.util.List;
 
 public class CollectionFragmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Cell> mData;
-    private LayoutInflater mInflater;
+    private List<Cell> data;
+    private LayoutInflater inflater;
     static final int TYPE_HEADER = 0;
     static final int TYPE_ITEM = 1;
 
     CollectionFragmentRecyclerViewAdapter(Context context, List<Cell> data) {
-        this.mInflater = LayoutInflater.from(context);
-        this.mData = data;
+        this.inflater = LayoutInflater.from(context);
+        this.data = data;
     }
 
     @Override
     @NonNull
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if(viewType == TYPE_ITEM){
-            View view = mInflater.inflate(R.layout.recyclerview_item, parent, false);
+            View view = inflater.inflate(R.layout.recyclerview_item, parent, false);
             return new ViewHolderItem(view);
         }else if(viewType == TYPE_HEADER){
-            View view = mInflater.inflate(R.layout.header, parent, false);
+            View view = inflater.inflate(R.layout.header, parent, false);
             return new ViewHolderHeader(view);
         }
         throw new RuntimeException("No match for " + viewType + ".");
@@ -42,12 +42,12 @@ public class CollectionFragmentRecyclerViewAdapter extends RecyclerView.Adapter<
         switch (holder.getItemViewType()) {
             case TYPE_ITEM:
                 ViewHolderItem viewHolderItem = (ViewHolderItem)holder;
-                viewHolderItem.collection.setText(mData.get(position).getName());
-                if(mData.get(position).getResult()==null){
+                viewHolderItem.collection.setText(data.get(position).getName());
+                if(data.get(position).getResult() == null){
                     viewHolderItem.progressBar.setVisibility(View.VISIBLE);
                     viewHolderItem.runtime.setVisibility(View.GONE);
                 }else{
-                    viewHolderItem.runtime.setText(mData.get(position).getResult());
+                    viewHolderItem.runtime.setText(data.get(position).getResult());
                     viewHolderItem.progressBar.setVisibility(View.GONE);
                     viewHolderItem.runtime.setVisibility(View.VISIBLE);
                 }
@@ -76,7 +76,7 @@ public class CollectionFragmentRecyclerViewAdapter extends RecyclerView.Adapter<
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return data.size();
     }
 
     @Override
