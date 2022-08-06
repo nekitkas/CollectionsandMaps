@@ -14,8 +14,8 @@ import java.util.List;
 
 public class CollectionFragmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Cell> data;
-    private LayoutInflater inflater;
+    private final List<Cell> data;
+    private final LayoutInflater inflater;
     static final int TYPE_HEADER = 0;
     static final int TYPE_ITEM = 1;
 
