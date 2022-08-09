@@ -3,8 +3,10 @@ package com.foxstudent.collectionsandmaps;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,13 +38,10 @@ public class MapFragment extends Fragment {
 
         MainViewModel model = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
-        LiveData<List<Cell>> dataCell = model.getMapCell();
         data = new ArrayList<>();
-
-        dataCell.observe(requireActivity(),cells -> {
+        model.getMapCell().observe(requireActivity(),cells -> {
             data.addAll(cells);
         });
-
 
         GridLayoutManager manager = new GridLayoutManager(getContext(),2);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
@@ -63,11 +62,9 @@ public class MapFragment extends Fragment {
         recyclerViewAdapter = new MapFragmentRecyclerViewAdapter(getContext(),data);
         fragmentMapBinding.rvGrid.setAdapter(recyclerViewAdapter);
 
-        LiveData<Map<Integer,String>> dataModel = model.getMapData();
-
-        dataModel.observe(requireActivity(), stringStringMap -> {
+        model.getMapData().observe(requireActivity(),result->{
             for (int i = 0; i < data.size(); i++) {
-                data.get(i).setResult(stringStringMap.get(i));
+                data.get(i).setResult(result.get(i));
                 recyclerViewAdapter.notifyItemChanged(i);
             }
         });

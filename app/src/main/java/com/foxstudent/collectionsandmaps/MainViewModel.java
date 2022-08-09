@@ -6,14 +6,17 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class MainViewModel extends ViewModel {
 
@@ -24,10 +27,8 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<List<Cell>> mapCell;
     private MutableLiveData<String> inputValue;
     private final ExecutorService service = Executors.newFixedThreadPool(30);
+    private String result;
 
-    public void shutDown(){
-        service.shutdownNow();
-    }
 
     public LiveData<List<Cell>> getMapCell(){
         if(mapCell == null){
@@ -99,135 +100,114 @@ public class MainViewModel extends ViewModel {
     }
 
     public void setCollectionData(){
-        Map<Integer,String> time = new HashMap<>();
+        ConcurrentHashMap<Integer,String> time = new ConcurrentHashMap<>();
         int value = Integer.parseInt(Objects.requireNonNull(inputValue.getValue()));
-        service.execute(() -> {
-            Collections collections = new Collections(new ArrayList<>(),value);
-            collections.listAddInTheBeginning();
-            time.put(1, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new LinkedList<>(),value);
-            collections.listAddInTheBeginning();
-            time.put(2, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new CopyOnWriteArrayList<>(),value);
-            collections.listAddInTheBeginning();
-            time.put(3, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(() -> {
-            Collections collections = new Collections(new ArrayList<>(),value);
-            collections.listAddInTheMiddle();
-            time.put(5, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new LinkedList<>(),value);
-            collections.listAddInTheMiddle();
-            time.put(6, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new CopyOnWriteArrayList<>(),value);
-            collections.listAddInTheMiddle();
-            time.put(7, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(() -> {
-            Collections collections = new Collections(new ArrayList<>(),value);
-            collections.listAddInTheEnd();
-            time.put(9, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new LinkedList<>(),value);
-            collections.listAddInTheEnd();
-            time.put(10, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new CopyOnWriteArrayList<>(),value);
-            collections.listAddInTheEnd();
-            time.put(11, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(() -> {
-            Collections collections = new Collections(new ArrayList<>(),value);
-            collections.listRemoveInTheBeginning();
-            time.put(13, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new LinkedList<>(),value);
-            collections.listRemoveInTheBeginning();
-            time.put(14, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new CopyOnWriteArrayList<>(),value);
-            collections.listRemoveInTheBeginning();
-            time.put(15, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(() -> {
-            Collections collections = new Collections(new ArrayList<>(),value);
-            collections.listRemoveInTheMiddle();
-            time.put(17, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new LinkedList<>(),value);
-            collections.listRemoveInTheMiddle();
-            time.put(18, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new CopyOnWriteArrayList<>(),value);
-            collections.listRemoveInTheMiddle();
-            time.put(19, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(() -> {
-            Collections collections = new Collections(new ArrayList<>(),value);
-            collections.listRemoveInTheEnd();
-            time.put(21, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new LinkedList<>(),value);
-            collections.listRemoveInTheEnd();
-            time.put(22, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new CopyOnWriteArrayList<>(),value);
-            collections.listRemoveInTheEnd();
-            time.put(23, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(() -> {
-            Collections collections = new Collections(new ArrayList<>(),value);
-            collections.listSearchByValue();
-            time.put(25, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new LinkedList<>(),value);
-            collections.listSearchByValue();
-            time.put(26, collections.getTime());
-            collectionData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new CopyOnWriteArrayList<>(),value);
-            collections.listSearchByValue();
-            time.put(27, collections.getTime());
-            collectionData.postValue(time);
-        });
-    }
+            service.execute(() -> {
+                result = Collections.listAddInTheBeginning(new ArrayList<>(), value);
+                time.put(1, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listAddInTheBeginning(new LinkedList<>(),value);
+                time.put(2, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listAddInTheBeginning(new CopyOnWriteArrayList<>(),value);
+                time.put(3, result);
+                collectionData.postValue(time);
+            });
+            service.execute(() -> {
+                result = Collections.listAddInTheMiddle(new ArrayList<>(),value);
+                time.put(5, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listAddInTheMiddle(new LinkedList<>(),value);
+                time.put(6, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listAddInTheMiddle(new CopyOnWriteArrayList<>(),value);
+                time.put(7, result);
+                collectionData.postValue(time);
+            });
+            service.execute(() -> {
+                result = Collections.listAddInTheEnd(new ArrayList<>(),value);
+                time.put(9, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listAddInTheEnd(new LinkedList<>(),value);
+                time.put(10, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listAddInTheEnd(new CopyOnWriteArrayList<>(),value);
+                time.put(11, result);
+                collectionData.postValue(time);
+            });
+            service.execute(() -> {
+                result = Collections.listRemoveInTheBeginning(new ArrayList<>(),value);
+                time.put(13, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listRemoveInTheBeginning(new LinkedList<>(),value);
+                time.put(14, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listRemoveInTheBeginning(new CopyOnWriteArrayList<>(),value);
+                time.put(15, result);
+                collectionData.postValue(time);
+            });
+            service.execute(() -> {
+                result = Collections.listRemoveInTheMiddle(new ArrayList<>(),value);
+                time.put(17, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listRemoveInTheMiddle(new LinkedList<>(),value);
+                time.put(18, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listRemoveInTheMiddle(new CopyOnWriteArrayList<>(),value);
+                time.put(19, result);
+                collectionData.postValue(time);
+            });
+            service.execute(() -> {
+                result = Collections.listRemoveInTheEnd(new ArrayList<>(),value);
+                time.put(21, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listRemoveInTheEnd(new LinkedList<>(),value);
+                time.put(22, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listRemoveInTheEnd(new CopyOnWriteArrayList<>(),value);
+                time.put(23, result);
+                collectionData.postValue(time);
+            });
+            service.execute(() -> {
+                result = Collections.listSearchByValue(new ArrayList<>(),value);
+                time.put(25, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listSearchByValue(new LinkedList<>(),value);
+                time.put(26, result);
+                collectionData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.listSearchByValue(new CopyOnWriteArrayList<>(),value);
+                time.put(27, result);
+                collectionData.postValue(time);
+            });
+        }
 
     public LiveData<Map<Integer,String>> getMapData(){
         if(mapData == null){
@@ -238,43 +218,51 @@ public class MainViewModel extends ViewModel {
     }
 
     public void setMapData(){
-        Map<Integer,String> time = new HashMap<>();
+        ConcurrentHashMap<Integer,String> time = new ConcurrentHashMap<>();
         int value = Integer.parseInt(Objects.requireNonNull(inputValue.getValue()));
-        service.execute(() -> {
-            Collections collections = new Collections(new TreeMap<>(),value);
-            collections.mapAddingNew();
-            time.put(1, collections.getTime());
-            mapData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new HashMap<>(),value);
-            collections.mapAddingNew();
-            time.put(2, collections.getTime());
-            mapData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new TreeMap<>(),value);
-            collections.mapSearchByKey();
-            time.put(4, collections.getTime());
-            mapData.postValue(time);
-        });
-        service.execute(() -> {
-            Collections collections = new Collections(new HashMap<>(),value);
-            collections.mapSearchByKey();
-            time.put(5, collections.getTime());
-            mapData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new TreeMap<>(),value);
-            collections.mapRemoving();
-            time.put(7, collections.getTime());
-            mapData.postValue(time);
-        });
-        service.execute(()->{
-            Collections collections = new Collections(new HashMap<>(),value);
-            collections.mapRemoving();
-            time.put(8, collections.getTime());
-            mapData.postValue(time);
-        });
+            service.execute(() -> {
+                result = Collections.mapAddingNew(new TreeMap<>(),value);
+                time.put(1, result);
+                mapData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.mapAddingNew(new HashMap<>(),value);
+                time.put(2, result);
+                mapData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.mapSearchByKey(new TreeMap<>(),value);
+                time.put(4, result);
+                mapData.postValue(time);
+            });
+            service.execute(() -> {
+                result = Collections.mapSearchByKey(new HashMap<>(),value);
+                time.put(5, result);
+                mapData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.mapRemoving(new TreeMap<>(),value);
+                time.put(7, result);
+                mapData.postValue(time);
+            });
+            service.execute(()->{
+                result = Collections.mapRemoving(new HashMap<>(),value);
+                time.put(8, result);
+                mapData.postValue(time);
+            });
+        }
+
+    public void shutDown(){
+        service.shutdown();
+        try {
+            if (!service.awaitTermination(5, TimeUnit.SECONDS)) {
+                service.shutdownNow();
+                if (!service.awaitTermination(5, TimeUnit.SECONDS))
+                    System.err.println("Pool did not terminate");
+            }
+        } catch (InterruptedException ie) {
+            service.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 }

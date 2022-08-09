@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -31,10 +32,8 @@ public class CollectionFragment extends Fragment {
 
         MainViewModel model = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
-        LiveData<List<Cell>> dataCell = model.getCollectionCell();
         data = new ArrayList<>();
-
-        dataCell.observe(requireActivity(),cells -> {
+        model.getCollectionCell().observe(requireActivity(),cells -> {
             data.addAll(cells);
         });
 
@@ -57,12 +56,10 @@ public class CollectionFragment extends Fragment {
         recyclerViewAdapter = new CollectionFragmentRecyclerViewAdapter(getContext(),data);
         fragmentCollectionBinding.rvGrid.setAdapter(recyclerViewAdapter);
 
-        LiveData<Map<Integer,String>> dataModel = model.getCollectionData();
-
-        dataModel.observe(requireActivity(), stringStringMap -> {
+        model.getCollectionData().observe(requireActivity(),result ->{
             for (int i = 0; i < data.size(); i++) {
-                    data.get(i).setResult(stringStringMap.get(i));
-                    recyclerViewAdapter.notifyItemChanged(i);
+                data.get(i).setResult(result.get(i));
+                recyclerViewAdapter.notifyItemChanged(i);
             }
         });
 

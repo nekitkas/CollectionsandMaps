@@ -1,131 +1,146 @@
 package com.foxstudent.collectionsandmaps;
 
 
+import android.util.Log;
+
 import java.util.List;
 import java.util.Map;
 
 public class Collections {
 
-    private List<Integer> list;
-    private Map<Integer,Integer> map;
-    private long time;
-    private final int value;
 
-
-    Collections(List<Integer> list, int value){
-        this.list = list;
-        this.value = value;
-    }
-
-    Collections(Map<Integer,Integer> map, int value){
-        this.map = map;
-        this.value = value;
-    }
-
-    public String getTime(){
-        return String.valueOf(time);
-    }
-
-
-    public void mapAddingNew(){
+    public static String measureTime(Runnable runnable){
         long startTime = System.currentTimeMillis();
+        runnable.run();
+        long endTime = System.currentTimeMillis();
+        return String.valueOf(endTime - startTime);
+    }
+
+    public static String mapAddingNew(Map<Integer,Integer> map,int value){
+        return measureTime(()->{
+            for (int i = 0; i < value; i++) {
+                map.put(i,0);
+                if(Thread.interrupted()){
+                    break;
+                }
+            }
+        });
+    }
+
+    public static String mapSearchByKey(Map<Integer,Integer> map,int value){
         for (int i = 0; i < value; i++) {
             map.put(i,0);
         }
-        long endTime = System.currentTimeMillis();
-        time = endTime - startTime;
+        return measureTime(()->{
+            for (int i = 0; i < map.size(); i++) {
+                map.get(i);
+                if(Thread.interrupted()){
+                    break;
+                }
+            }
+        });
     }
-    public void mapSearchByKey(){
+
+    public static String mapRemoving(Map<Integer,Integer> map,int value){
         for (int i = 0; i < value; i++) {
             map.put(i,0);
         }
-        long startTime = System.currentTimeMillis();
-        for (int i = 0; i < map.size(); i++) {
-            map.get(i);
-        }
-        long endTime = System.currentTimeMillis();
-        time = endTime - startTime;
+        return measureTime(()->{
+            for (int i = 0; i < map.size(); i++) {
+                map.remove(i);
+                if(Thread.interrupted()){
+                    break;
+                }
+            }
+        });
     }
-    public void mapRemoving(){
-        for (int i = 0; i < value; i++) {
-            map.put(i,0);
-        }
-        long startTime = System.currentTimeMillis();
-        for (int i = 0; i < map.size(); i++) {
-            map.remove(i);
-        }
-        long endTime = System.currentTimeMillis();
-        time = endTime - startTime;
+
+    public static String listAddInTheBeginning(List<Integer> list,int value){
+        return measureTime(()->{
+            for (int i = 0; i < value; i++) {
+                list.add(0,0);
+                if(Thread.interrupted()){
+                    break;
+                }
+            }
+        });
     }
-    public void listAddInTheBeginning(){
-        long startTime = System.currentTimeMillis();
-        for (int i = 0; i < value; i++) {
-            list.add(0,0);
-        }
-        long endTime = System.currentTimeMillis();
-        time = endTime - startTime;
+
+    public static String listAddInTheMiddle(List<Integer> list,int value){
+        return measureTime(()->{
+            for (int i = 0; i < value; i++) {
+                list.add(list.size() / 2,0);
+                if(Thread.interrupted()){
+                    break;
+                }
+            }
+        });
     }
-    public void listAddInTheMiddle(){
-        long startTime = System.currentTimeMillis();
-        for (int i = 0; i < value; i++) {
-            int index = list.size() / 2;
-            list.add(Math.round(index),0);
-        }
-        long endTime = System.currentTimeMillis();
-        time = endTime - startTime;
+
+    public static String listAddInTheEnd(List<Integer> list,int value){
+        return measureTime(()->{
+            for (int i = 0; i < value; i++) {
+                list.add(list.size(),0);
+                if(Thread.interrupted()){
+                    break;
+                }
+            }
+        });
     }
-    public void listAddInTheEnd(){
-        long startTime = System.currentTimeMillis();
-        for (int i = 0; i < value; i++) {
-            list.add(list.size(),0);
-        }
-        long endTime = System.currentTimeMillis();
-        time = endTime - startTime;
-    }
-    public void listRemoveInTheBeginning(){
-        for (int i = 0; i < value; i++) {
-            list.add(0);
-        }
-        long startTime = System.currentTimeMillis();
-        for (int i = 0; i < list.size(); i++) {
-            list.remove(0);
-        }
-        long endTime = System.currentTimeMillis();
-        time = endTime - startTime;
-    }
-    public void listRemoveInTheMiddle(){
+
+    public static String listRemoveInTheBeginning(List<Integer> list,int value){
         for (int i = 0; i < value; i++) {
             list.add(0);
         }
-        long startTime = System.currentTimeMillis();
-        for (int i = 0; i < list.size(); i++) {
-            int index = list.size() / 2;
-            list.remove(Math.round(index));
-        }
-        long endTime = System.currentTimeMillis();
-        time = endTime - startTime;
+        return measureTime(()->{
+            for (int i = 0; i < list.size(); i++) {
+                list.remove(0);
+                if(Thread.interrupted()){
+                    break;
+                }
+            }
+        });
     }
-    public void listRemoveInTheEnd(){
+
+    public static String listRemoveInTheMiddle(List<Integer> list,int value){
         for (int i = 0; i < value; i++) {
             list.add(0);
         }
-        long startTime = System.currentTimeMillis();
-        for (int i = 0; i < list.size(); i++) {
-            int index = list.size() - 1;
-            list.remove(index);
-        }
-        long endTime = System.currentTimeMillis();
-        time = endTime - startTime;
+        return measureTime(()->{
+            for (int i = 0; i < list.size(); i++) {
+                list.remove(list.size() / 2);
+                if(Thread.interrupted()){
+                    break;
+                }
+            }
+        });
     }
-    public void listSearchByValue(){
+
+    public static String listRemoveInTheEnd(List<Integer> list,int value){
+        for (int i = 0; i < value; i++) {
+            list.add(0);
+        }
+        return measureTime(()->{
+            for (int i = 0; i < list.size(); i++) {
+                list.remove(list.size() - 1);
+                if(Thread.interrupted()){
+                    break;
+                }
+            }
+        });
+    }
+
+    public static String listSearchByValue(List<Integer> list,int value){
         for (int i = 0; i < value - 1; i++) {
             list.add(0);
         }
-        long startTime = System.currentTimeMillis();
-        for (int i = 0; i < list.size(); i++) {
-            list.get(i);
-        }
-        long endTime = System.currentTimeMillis();
-        time = endTime - startTime;
+        return measureTime(()->{
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i);
+                if(Thread.interrupted()){
+                    break;
+                }
+            }
+        });
     }
 }
