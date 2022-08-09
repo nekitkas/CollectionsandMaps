@@ -1,7 +1,6 @@
 package com.foxstudent.collectionsandmaps;
 
 
-import android.util.Log;
 
 import java.util.List;
 import java.util.Map;
