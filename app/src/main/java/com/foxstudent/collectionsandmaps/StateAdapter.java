@@ -18,11 +18,12 @@ public class StateAdapter extends FragmentStateAdapter {
         super(fragmentManager, lifecycle);
     }
 
-    public void addFragment(Fragment fragment,String title){
+    public void addFragment(Fragment fragment, String title) {
         fragmentList.add(fragment);
         fragmentTitleList.add(title);
     }
-    public String getName(int position){
+
+    public String getName(int position) {
         return fragmentTitleList.get(position);
     }
 

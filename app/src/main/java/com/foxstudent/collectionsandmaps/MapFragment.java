@@ -17,6 +17,7 @@ import com.foxstudent.collectionsandmaps.databinding.FragmentMapBinding;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import androidx.lifecycle.ViewModelProvider;
 
 public class MapFragment extends Fragment {
@@ -24,6 +25,11 @@ public class MapFragment extends Fragment {
     private MapFragmentRecyclerViewAdapter recyclerViewAdapter;
     private FragmentMapBinding fragmentMapBinding;
     private List<Cell> data;
+    private static final int HEADER = 2;
+    private static final int ITEM = 1;
+    private static final int DEFAULT = -1;
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -33,30 +39,30 @@ public class MapFragment extends Fragment {
         MainViewModel model = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
         data = new ArrayList<>();
-        model.getMapCell().observe(requireActivity(),cells -> {
+        model.getMapCell().observe(requireActivity(), cells -> {
             data.addAll(cells);
         });
 
-        GridLayoutManager manager = new GridLayoutManager(getContext(),2);
-        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
+        GridLayoutManager manager = new GridLayoutManager(getContext(), 2);
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                switch(recyclerViewAdapter.getItemViewType(position)){
-                    case MapFragmentRecyclerViewAdapter.TYPE_HEADER:
-                        return 2;
-                    case MapFragmentRecyclerViewAdapter.TYPE_ITEM:
-                        return 1;
+                switch (recyclerViewAdapter.getItemViewType(position)) {
+                    case TYPE_HEADER:
+                        return HEADER;
+                    case TYPE_ITEM:
+                        return ITEM;
                     default:
-                        return -1;
+                        return DEFAULT;
                 }
             }
         });
 
         fragmentMapBinding.rvGrid.setLayoutManager(manager);
-        recyclerViewAdapter = new MapFragmentRecyclerViewAdapter(getContext(),data);
+        recyclerViewAdapter = new MapFragmentRecyclerViewAdapter(getContext(), data);
         fragmentMapBinding.rvGrid.setAdapter(recyclerViewAdapter);
 
-        model.getMapData().observe(requireActivity(),result->{
+        model.getMapData().observe(requireActivity(), result -> {
             for (int i = 0; i < data.size(); i++) {
                 data.get(i).setResult(result.get(i));
                 recyclerViewAdapter.notifyItemChanged(i);

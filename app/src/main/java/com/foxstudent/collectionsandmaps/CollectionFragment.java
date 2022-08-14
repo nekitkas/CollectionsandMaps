@@ -21,6 +21,11 @@ public class CollectionFragment extends Fragment {
     private CollectionFragmentRecyclerViewAdapter recyclerViewAdapter;
     private FragmentCollectionBinding fragmentCollectionBinding;
     private List<Cell> data;
+    private static final int HEADER = 3;
+    private static final int ITEM = 1;
+    private static final int DEFAULT = -1;
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -30,30 +35,30 @@ public class CollectionFragment extends Fragment {
         MainViewModel model = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
         data = new ArrayList<>();
-        model.getCollectionCell().observe(requireActivity(),cells -> {
+        model.getCollectionCell().observe(requireActivity(), cells -> {
             data.addAll(cells);
         });
 
-        GridLayoutManager manager = new GridLayoutManager(getContext(),3);
-        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
+        GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                switch(recyclerViewAdapter.getItemViewType(position)){
-                    case CollectionFragmentRecyclerViewAdapter.TYPE_HEADER:
-                        return 3;
-                    case CollectionFragmentRecyclerViewAdapter.TYPE_ITEM:
-                        return 1;
+                switch (recyclerViewAdapter.getItemViewType(position)) {
+                    case TYPE_HEADER:
+                        return HEADER;
+                    case TYPE_ITEM:
+                        return ITEM;
                     default:
-                        return -1;
+                        return DEFAULT;
                 }
             }
         });
 
         fragmentCollectionBinding.rvGrid.setLayoutManager(manager);
-        recyclerViewAdapter = new CollectionFragmentRecyclerViewAdapter(getContext(),data);
+        recyclerViewAdapter = new CollectionFragmentRecyclerViewAdapter(getContext(), data);
         fragmentCollectionBinding.rvGrid.setAdapter(recyclerViewAdapter);
 
-        model.getCollectionData().observe(requireActivity(),result ->{
+        model.getCollectionData().observe(requireActivity(), result -> {
             for (int i = 0; i < data.size(); i++) {
                 data.get(i).setResult(result.get(i));
                 recyclerViewAdapter.notifyItemChanged(i);

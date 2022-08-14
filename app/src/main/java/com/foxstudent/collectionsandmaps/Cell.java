@@ -5,22 +5,22 @@ public class Cell {
     private String result;
 
 
-    public Cell(){
+    public Cell() {
     }
 
-    public Cell(String name){
+    public Cell(String name) {
         this.name = name;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public void setResult(String result){
+    public void setResult(String result) {
         this.result = result;
     }
 
-    public String getResult(){
+    public String getResult() {
         return result;
     }
 

@@ -16,8 +16,8 @@ public class CollectionFragmentRecyclerViewAdapter extends RecyclerView.Adapter<
 
     private final List<Cell> data;
     private final LayoutInflater inflater;
-    static final int TYPE_HEADER = 0;
-    static final int TYPE_ITEM = 1;
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
 
     CollectionFragmentRecyclerViewAdapter(Context context, List<Cell> data) {
         this.inflater = LayoutInflater.from(context);
@@ -27,10 +27,10 @@ public class CollectionFragmentRecyclerViewAdapter extends RecyclerView.Adapter<
     @Override
     @NonNull
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(viewType == TYPE_ITEM){
+        if (viewType == TYPE_ITEM) {
             View view = inflater.inflate(R.layout.recyclerview_item, parent, false);
             return new ViewHolderItem(view);
-        }else if(viewType == TYPE_HEADER){
+        } else if (viewType == TYPE_HEADER) {
             View view = inflater.inflate(R.layout.header, parent, false);
             return new ViewHolderHeader(view);
         }
@@ -41,12 +41,12 @@ public class CollectionFragmentRecyclerViewAdapter extends RecyclerView.Adapter<
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case TYPE_ITEM:
-                ViewHolderItem viewHolderItem = (ViewHolderItem)holder;
+                ViewHolderItem viewHolderItem = (ViewHolderItem) holder;
                 viewHolderItem.collection.setText(data.get(position).getName());
-                if(data.get(position).getResult() == null){
+                if (data.get(position).getResult() == null) {
                     viewHolderItem.progressBar.setVisibility(View.VISIBLE);
                     viewHolderItem.runtime.setVisibility(View.GONE);
-                }else{
+                } else {
                     viewHolderItem.runtime.setText(data.get(position).getResult());
                     viewHolderItem.progressBar.setVisibility(View.GONE);
                     viewHolderItem.runtime.setVisibility(View.VISIBLE);
@@ -54,20 +54,20 @@ public class CollectionFragmentRecyclerViewAdapter extends RecyclerView.Adapter<
                 break;
 
             case TYPE_HEADER:
-                ViewHolderHeader viewHolderHeader = (ViewHolderHeader)holder;
-                if(position == 0){
+                ViewHolderHeader viewHolderHeader = (ViewHolderHeader) holder;
+                if (position == 0) {
                     viewHolderHeader.operation.setText(R.string.addingInTheBeginning);
-                }else if(position == 4){
+                } else if (position == 4) {
                     viewHolderHeader.operation.setText(R.string.addingInTheMiddle);
-                }else if(position == 8){
+                } else if (position == 8) {
                     viewHolderHeader.operation.setText(R.string.addingInTheEnd);
-                }else if(position == 12){
+                } else if (position == 12) {
                     viewHolderHeader.operation.setText(R.string.removingInTheBeginning);
-                }else if(position == 16){
+                } else if (position == 16) {
                     viewHolderHeader.operation.setText(R.string.removingInTheMiddle);
-                }else if(position == 20){
+                } else if (position == 20) {
                     viewHolderHeader.operation.setText(R.string.removingInTheEnd);
-                }else if(position == 24){
+                } else if (position == 24) {
                     viewHolderHeader.operation.setText(R.string.searchByValue);
                 }
                 break;
@@ -81,14 +81,14 @@ public class CollectionFragmentRecyclerViewAdapter extends RecyclerView.Adapter<
 
     @Override
     public int getItemViewType(int position) {
-        if (isPositionHeader(position)){
+        if (isPositionHeader(position)) {
             return TYPE_HEADER;
         }
         return TYPE_ITEM;
     }
 
     private boolean isPositionHeader(int position) {
-        switch (position){
+        switch (position) {
             case 0:
             case 4:
             case 8:
@@ -103,7 +103,7 @@ public class CollectionFragmentRecyclerViewAdapter extends RecyclerView.Adapter<
     }
 
     public static class ViewHolderItem extends RecyclerView.ViewHolder {
-        TextView runtime,collection;
+        TextView runtime, collection;
         ProgressBar progressBar;
 
         ViewHolderItem(View itemView) {
