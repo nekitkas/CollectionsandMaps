@@ -1,23 +1,13 @@
 <resources>
     <string name="app_name">Collections and Maps</string>
-    <string name="collections">Collections</string>
-    <string name="maps">Maps</string>
-    <string name="tvInfo">Please enter collection size and number of elements to compare</string>
-    <string name="calculate">Calculate</string>
-    <string name="etInput">Number of elements</string>
-    <string name="tvInput">Please enter collection size and number of elements to compare</string>
-    <string name="etInputHint">Collection size</string>
-    <string name="btnCalculate">Calculate</string>
-    <string name="text">Adding in the beginning</string>
-    <string name="btnClear">Clear</string>
-    <string name="searchByValue">Search by value</string>
-    <string name="removingInTheEnd">Removing in the end</string>
-    <string name="removingInTheMiddle">Removing in the middle</string>
-    <string name="removingInTheBeginning">Removing in the beginning</string>
-    <string name="addingInTheEnd">Adding in the end</string>
-    <string name="addingInTheMiddle">Adding in the middle</string>
-    <string name="addingInTheBeginning">Adding in the beginning</string>
-    <string name="addingNew">Adding new</string>
-    <string name="searchByKey">Search by key</string>
-    <string name="removing">Removing</string>
+    <string name="collection">Collection</string>
+    <string name="map">Map</string>
+    <string name="button">Start</string>
+    <string name="operations">Operations</string>
+    <string name="threads">Threads</string>
+    <string name="stop">Stop</string>
+    <string name="start">Start</string>
+    <string name="empty_field">Empty field</string>
+    <string name="calc_start">Calculation started</string>
+    <string name="calc_stop">Calculation stopped</string>
 </resources>

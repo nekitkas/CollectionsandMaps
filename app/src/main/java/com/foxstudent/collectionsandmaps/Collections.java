@@ -18,9 +18,6 @@ public class Collections {
         return measureTime(() -> {
             for (int i = 0; i < value; i++) {
                 map.put(i, 0);
-                if (Thread.interrupted()) {
-                    break;
-                }
             }
         });
     }
@@ -30,9 +27,6 @@ public class Collections {
         return measureTime(() -> {
             for (int i = 0; i < map.size(); i++) {
                 map.get(i);
-                if (Thread.interrupted()) {
-                    break;
-                }
             }
         });
     }
@@ -42,9 +36,6 @@ public class Collections {
         return measureTime(() -> {
             for (int i = 0; i < map.size(); i++) {
                 map.remove(i);
-                if (Thread.interrupted()) {
-                    break;
-                }
             }
         });
     }
@@ -53,9 +44,6 @@ public class Collections {
         return measureTime(() -> {
             for (int i = 0; i < value; i++) {
                 list.add(0, 0);
-                if (Thread.interrupted()) {
-                    break;
-                }
             }
         });
     }
@@ -64,9 +52,6 @@ public class Collections {
         return measureTime(() -> {
             for (int i = 0; i < value; i++) {
                 list.add(list.size() / 2, 0);
-                if (Thread.interrupted()) {
-                    break;
-                }
             }
         });
     }
@@ -75,9 +60,6 @@ public class Collections {
         return measureTime(() -> {
             for (int i = 0; i < value; i++) {
                 list.add(list.size(), 0);
-                if (Thread.interrupted()) {
-                    break;
-                }
             }
         });
     }
@@ -87,9 +69,6 @@ public class Collections {
         return measureTime(() -> {
             for (int i = 0; i < list.size(); i++) {
                 list.remove(0);
-                if (Thread.interrupted()) {
-                    break;
-                }
             }
         });
     }
@@ -99,9 +78,6 @@ public class Collections {
         return measureTime(() -> {
             for (int i = 0; i < list.size(); i++) {
                 list.remove(list.size() / 2);
-                if (Thread.interrupted()) {
-                    break;
-                }
             }
         });
     }
@@ -111,9 +87,6 @@ public class Collections {
         return measureTime(() -> {
             for (int i = 0; i < list.size(); i++) {
                 list.remove(list.size() - 1);
-                if (Thread.interrupted()) {
-                    break;
-                }
             }
         });
     }
@@ -123,9 +96,6 @@ public class Collections {
         return measureTime(() -> {
             for (int i = 0; i < list.size(); i++) {
                 list.get(i);
-                if (Thread.interrupted()) {
-                    break;
-                }
             }
         });
     }
