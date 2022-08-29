@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -16,7 +17,7 @@ import com.foxstudent.collectionsandmaps.databinding.FragmentBinding;
 
 import java.util.ArrayList;
 
-public class BenchmarksFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
+public class BenchmarksFragment extends Fragment implements View.OnClickListener {
 
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private FragmentBinding binding;
