@@ -10,7 +10,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class MainActivity extends AppCompatActivity {
 
-    private StateAdapter stateAdapter;
     private ActivityMainBinding binding;
     private TabLayoutMediator tabLayoutMediator;
 
@@ -25,13 +24,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFragments() {
-        CollectionFragment collectionFragment = new CollectionFragment();
-        MapFragment mapFragment = new MapFragment();
+        BenchmarksFragment collectionFragment = BenchmarksFragment.newInstance("collections");
+        BenchmarksFragment mapFragment = BenchmarksFragment.newInstance("maps");
 
-        stateAdapter = new StateAdapter(getSupportFragmentManager(), getLifecycle());
-
-        stateAdapter.addFragment(collectionFragment, "Collection");
-        stateAdapter.addFragment(mapFragment, "Map");
+        StateAdapter stateAdapter = new StateAdapter(getSupportFragmentManager(), getLifecycle());
+        stateAdapter.addFragment(collectionFragment, getString(R.string.collection));
+        stateAdapter.addFragment(mapFragment, getString(R.string.map));
 
         binding.viewPager2.setAdapter(stateAdapter);
         tabLayoutMediator = new TabLayoutMediator(binding.tabLayout, binding.viewPager2, (tab, position) -> {

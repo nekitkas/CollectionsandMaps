@@ -1,9 +1,12 @@
 package com.foxstudent.collectionsandmaps;
 
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class MainViewModel extends ViewModel {
+public class BenchmarksViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<Cell>> collectionCell;
     private MutableLiveData<List<Cell>> mapCell;
@@ -32,6 +35,9 @@ public class MainViewModel extends ViewModel {
     private final ConcurrentHashMap<Integer, String> collectionResult = new ConcurrentHashMap<>();
     private ExecutorService service;
 
+    public BenchmarksViewModel(@NonNull Application application) {
+        super(application);
+    }
 
     public LiveData<List<Cell>> getMapCell() {
         if (mapCell == null) {
@@ -70,14 +76,17 @@ public class MainViewModel extends ViewModel {
     }
 
     public void updateMapCell(int key) {
-        mapCells.get(key).setResult(mapResult.get(key));
-        mapCells.get(key).setName(mapNames.get(key) + mapCells.get(key).getResult());
-
+        mapCells.remove(key);
+        Cell newCell = new Cell(mapNames.get(key) + mapResult.get(key));
+        mapCells.add(key, newCell);
+        mapCell.postValue(mapCells);
     }
 
     public void updateCollectionCell(int key) {
-        collectionCells.get(key).setResult(collectionResult.get(key));
-        collectionCells.get(key).setName(collectionNames.get(key) + collectionCells.get(key).getResult());
+        collectionCells.remove(key);
+        Cell newCell = new Cell(collectionNames.get(key) + collectionResult.get(key));
+        collectionCells.add(key, newCell);
+        collectionCell.postValue(collectionCells);
     }
 
     public LiveData<String> getOperationInput() {
@@ -230,7 +239,7 @@ public class MainViewModel extends ViewModel {
             if (!service.awaitTermination(0, TimeUnit.SECONDS)) {
                 service.shutdownNow();
                 if (!service.awaitTermination(0, TimeUnit.SECONDS))
-                    System.err.println("Pool did not terminate");
+                    System.err.println(getApplication().getString(R.string.service_fail));
             }
         } catch (InterruptedException ie) {
             service.shutdownNow();
@@ -239,35 +248,35 @@ public class MainViewModel extends ViewModel {
     }
 
     private void setMapNames() {
-        mapNames.add("Adding to TreeMap:");
-        mapNames.add("Adding to HashMap:");
-        mapNames.add("Search in TreeMap:");
-        mapNames.add("Search in HashMap:");
-        mapNames.add("Removing from TreeMap:");
-        mapNames.add("Removing from HashMap:");
+        mapNames.add(getApplication().getString(R.string.treeMapAddToStart));
+        mapNames.add(getApplication().getString(R.string.hashMapAddToStart));
+        mapNames.add(getApplication().getString(R.string.searchInTreeMap));
+        mapNames.add(getApplication().getString(R.string.searchInHashMap));
+        mapNames.add(getApplication().getString(R.string.removeFromThreeMap));
+        mapNames.add(getApplication().getString(R.string.removeFromHashMap));
     }
 
     private void setCollectionName() {
-        collectionNames.add("Adding to start in ArrayList:");
-        collectionNames.add("Adding to start in LinkedList:");
-        collectionNames.add("Adding to start in CopyOnWrite:");
-        collectionNames.add("Adding to middle in ArrayList:");
-        collectionNames.add("Adding to middle in LinkedList:");
-        collectionNames.add("Adding to middle in CopyOnWrite:");
-        collectionNames.add("Adding to end in ArrayList:");
-        collectionNames.add("Adding to end in LinkedList:");
-        collectionNames.add("Adding to end in CopyOnWrite:");
-        collectionNames.add("Removing from start in ArrayList:");
-        collectionNames.add("Removing from start in LinkedList:");
-        collectionNames.add("Removing from start in CopyOnWrite:");
-        collectionNames.add("Removing from middle in ArrayList:");
-        collectionNames.add("Removing from middle in LinkedList:");
-        collectionNames.add("Removing from middle in CopyOnWrite:");
-        collectionNames.add("Removing from end in ArrayList:");
-        collectionNames.add("Removing from end in LinkedList:");
-        collectionNames.add("Removing from end in CopyOnWrite:");
-        collectionNames.add("Search in ArrayList:");
-        collectionNames.add("Search in LinkedList:");
-        collectionNames.add("Search in CopyOnWrite:");
+        collectionNames.add(getApplication().getString(R.string.arrayAddToStart));
+        collectionNames.add(getApplication().getString(R.string.linkedListAddToStart));
+        collectionNames.add(getApplication().getString(R.string.copyOnWriteAddToStart));
+        collectionNames.add(getApplication().getString(R.string.arrayAddToMiddle));
+        collectionNames.add(getApplication().getString(R.string.linkedListAddToMiddle));
+        collectionNames.add(getApplication().getString(R.string.copyOnWriteAddToMiddle));
+        collectionNames.add(getApplication().getString(R.string.arrayAddToEnd));
+        collectionNames.add(getApplication().getString(R.string.linkedListAddToEnd));
+        collectionNames.add(getApplication().getString(R.string.copyOnWriteAddToEnd));
+        collectionNames.add(getApplication().getString(R.string.arrayRemoveFromStart));
+        collectionNames.add(getApplication().getString(R.string.linkedListRemoveFromStart));
+        collectionNames.add(getApplication().getString(R.string.copyOnWriteRemoveFromStart));
+        collectionNames.add(getApplication().getString(R.string.arrayRemoveFromMiddle));
+        collectionNames.add(getApplication().getString(R.string.linkedListRemoveFromMiddle));
+        collectionNames.add(getApplication().getString(R.string.copyOnWriteRemoveFromMiddle));
+        collectionNames.add(getApplication().getString(R.string.arrayRemoveFromEnd));
+        collectionNames.add(getApplication().getString(R.string.linkedListRemoveFromEnd));
+        collectionNames.add(getApplication().getString(R.string.copyOnWriteRemoveFromEnd));
+        collectionNames.add(getApplication().getString(R.string.searchInArray));
+        collectionNames.add(getApplication().getString(R.string.searchInLinkedList));
+        collectionNames.add(getApplication().getString(R.string.searchInCopyOnWrite));
     }
 }

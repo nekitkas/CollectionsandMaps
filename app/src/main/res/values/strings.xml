@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Collections and Maps</string>
     <string name="collection">Collection</string>
@@ -10,4 +11,35 @@
     <string name="empty_field">Empty field</string>
     <string name="calc_start">Calculation started</string>
     <string name="calc_stop">Calculation stopped</string>
+    <string name="service_fail">Pool did not terminate</string>
+
+    <string name="arrayAddToStart">Adding to start in ArrayList:</string>
+    <string name="linkedListAddToStart">Adding to start in LinkedList:</string>
+    <string name="copyOnWriteAddToStart">Adding to start in CopyOnWrite:</string>
+    <string name="arrayAddToMiddle">Adding to middle in ArrayList:</string>
+    <string name="linkedListAddToMiddle">Adding to middle in LinkedList:</string>
+    <string name="copyOnWriteAddToMiddle">Adding to middle in CopyOnWrite:</string>
+    <string name="arrayAddToEnd">Adding to end in ArrayList:</string>
+    <string name="linkedListAddToEnd">Adding to end in LinkedList:</string>
+    <string name="copyOnWriteAddToEnd">Adding to end in CopyOnWrite:</string>
+    <string name="arrayRemoveFromStart">Remove from start in ArrayList:</string>
+    <string name="linkedListRemoveFromStart">Remove from start in LinkedList:</string>
+    <string name="copyOnWriteRemoveFromStart">Remove from start in CopyOnWrite:</string>
+    <string name="arrayRemoveFromMiddle">Remove from middle in ArrayList:</string>
+    <string name="linkedListRemoveFromMiddle">Remove from middle in LinkedList:</string>
+    <string name="copyOnWriteRemoveFromMiddle">Remove from middle in CopyOnWrite:</string>
+    <string name="arrayRemoveFromEnd">Remove from end in ArrayList:</string>
+    <string name="linkedListRemoveFromEnd">Remove from end in LinkedList:</string>
+    <string name="copyOnWriteRemoveFromEnd">Remove from end in CopyOnWrite:</string>
+    <string name="searchInArray">Search in ArrayList:</string>
+    <string name="searchInLinkedList">Search in LinkedList:</string>
+    <string name="searchInCopyOnWrite">Search in CopyOnWrite:</string>
+
+    <string name="treeMapAddToStart">Adding to TreeMap:</string>
+    <string name="hashMapAddToStart">Adding to HashMap:</string>
+    <string name="searchInTreeMap">Search in TreeMap:</string>
+    <string name="searchInHashMap">Search in HashMap:</string>
+    <string name="removeFromThreeMap">Removing from TreeMap:</string>
+    <string name="removeFromHashMap">Removing from HashMap:</string>
+
 </resources>

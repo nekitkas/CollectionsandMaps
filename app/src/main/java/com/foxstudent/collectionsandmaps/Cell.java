@@ -3,27 +3,10 @@ package com.foxstudent.collectionsandmaps;
 import java.util.Objects;
 
 public class Cell {
-    private String name;
-    private String result;
+    public final String name;
 
     public Cell(String name) {
         this.name = name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
-    }
-
-    public String getResult() {
-        return result;
     }
 
     @Override
@@ -34,12 +17,11 @@ public class Cell {
             return false;
         }
         Cell cell = (Cell) o;
-        return Objects.equals(name, cell.name) &&
-                Objects.equals(result, cell.result);
+        return Objects.equals(name, cell.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, result);
+        return Objects.hash(name);
     }
 }
