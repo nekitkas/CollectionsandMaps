@@ -1,6 +1,10 @@
-package com.foxstudent.collectionsandmaps;
+package com.foxstudent.collectionsandmaps.ui.benchmark;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,27 +12,23 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
+import com.foxstudent.collectionsandmaps.R;
 import com.foxstudent.collectionsandmaps.databinding.FragmentBinding;
 
 import java.util.ArrayList;
 
 public class BenchmarksFragment extends Fragment implements View.OnClickListener {
 
+    private static String fragment;
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private FragmentBinding binding;
     private BenchmarksViewModel model;
-    private static String fragment;
     private boolean running;
 
     public static BenchmarksFragment newInstance(String value) {
-        BenchmarksFragment fragment = new BenchmarksFragment();
+        final BenchmarksFragment fragment = new BenchmarksFragment();
 
-        Bundle args = new Bundle();
+        final Bundle args = new Bundle();
         args.putString("KEY", value);
         fragment.setArguments(args);
 
@@ -43,8 +43,9 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState
+    ) {
         binding = FragmentBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }

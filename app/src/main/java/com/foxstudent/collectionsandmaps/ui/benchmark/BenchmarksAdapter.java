@@ -1,4 +1,4 @@
-package com.foxstudent.collectionsandmaps;
+package com.foxstudent.collectionsandmaps.ui.benchmark;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -13,33 +13,22 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.foxstudent.collectionsandmaps.R;
+import com.foxstudent.collectionsandmaps.models.Cell;
+
 
 public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemHolder> {
 
     private boolean running;
 
-
     BenchmarksAdapter() {
         super(DIFF_CALLBACK);
     }
 
-    private static final DiffUtil.ItemCallback<Cell> DIFF_CALLBACK = new DiffUtil.ItemCallback<Cell>() {
-
-        @Override
-        public boolean areItemsTheSame(@NonNull Cell oldItem, @NonNull Cell newItem) {
-            return oldItem == newItem;
-        }
-
-        @Override
-        public boolean areContentsTheSame(Cell oldItem, Cell newItem) {
-            return oldItem.name.equals(newItem.name);
-        }
-    };
-
     @Override
     @NonNull
     public BenchmarksAdapter.ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_benchmark, parent, false);
         return new ItemHolder(view);
     }
 
@@ -51,6 +40,7 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
     public void running(boolean running) {
         this.running = running;
     }
+
 
     public class ItemHolder extends RecyclerView.ViewHolder {
         private final TextView operation;
@@ -93,4 +83,18 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
         }
 
     }
+
+
+    private static final DiffUtil.ItemCallback<Cell> DIFF_CALLBACK = new DiffUtil.ItemCallback<Cell>() {
+
+        @Override
+        public boolean areItemsTheSame(@NonNull Cell oldItem, @NonNull Cell newItem) {
+            return oldItem == newItem;
+        }
+
+        @Override
+        public boolean areContentsTheSame(Cell oldItem, Cell newItem) {
+            return oldItem.name.equals(newItem.name);
+        }
+    };
 }

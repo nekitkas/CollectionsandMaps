@@ -1,4 +1,4 @@
-package com.foxstudent.collectionsandmaps;
+package com.foxstudent.collectionsandmaps.models;
 
 
 import java.util.List;

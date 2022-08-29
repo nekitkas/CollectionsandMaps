@@ -1,4 +1,4 @@
-package com.foxstudent.collectionsandmaps;
+package com.foxstudent.collectionsandmaps.ui;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -27,6 +27,7 @@ public class StateAdapter extends FragmentStateAdapter {
         return titles.get(position);
     }
 
+    @NonNull
     @Override
     public Fragment createFragment(int position) {
         return fragments.get(position);

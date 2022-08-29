@@ -1,10 +1,12 @@
-package com.foxstudent.collectionsandmaps;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.foxstudent.collectionsandmaps.ui;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.foxstudent.collectionsandmaps.R;
 import com.foxstudent.collectionsandmaps.databinding.ActivityMainBinding;
+import com.foxstudent.collectionsandmaps.ui.benchmark.BenchmarksFragment;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 
@@ -12,7 +14,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private TabLayoutMediator tabLayoutMediator;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

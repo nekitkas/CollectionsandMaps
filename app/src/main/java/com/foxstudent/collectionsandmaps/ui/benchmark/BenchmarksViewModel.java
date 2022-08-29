@@ -1,4 +1,4 @@
-package com.foxstudent.collectionsandmaps;
+package com.foxstudent.collectionsandmaps.ui.benchmark;
 
 
 import android.app.Application;
@@ -7,6 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.foxstudent.collectionsandmaps.R;
+import com.foxstudent.collectionsandmaps.models.Cell;
+import com.foxstudent.collectionsandmaps.models.Collections;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,17 +26,17 @@ import java.util.concurrent.TimeUnit;
 
 public class BenchmarksViewModel extends AndroidViewModel {
 
-    private MutableLiveData<List<Cell>> collectionCell;
-    private MutableLiveData<List<Cell>> mapCell;
-    private MutableLiveData<String> inputValue;
-    private MutableLiveData<String> threadValue;
+    private final static String EMPTY_VALUE = "N/A";
     private final List<Cell> mapCells = new ArrayList<>();
     private final List<Cell> collectionCells = new ArrayList<>();
     private final List<String> mapNames = new ArrayList<>();
     private final List<String> collectionNames = new ArrayList<>();
-    private final static String EMPTY_VALUE = "N/A";
     private final ConcurrentHashMap<Integer, String> mapResult = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Integer, String> collectionResult = new ConcurrentHashMap<>();
+    private MutableLiveData<List<Cell>> collectionCell;
+    private MutableLiveData<List<Cell>> mapCell;
+    private MutableLiveData<String> inputValue;
+    private MutableLiveData<String> threadValue;
     private ExecutorService service;
 
     public BenchmarksViewModel(@NonNull Application application) {
@@ -238,8 +242,9 @@ public class BenchmarksViewModel extends AndroidViewModel {
         try {
             if (!service.awaitTermination(0, TimeUnit.SECONDS)) {
                 service.shutdownNow();
-                if (!service.awaitTermination(0, TimeUnit.SECONDS))
+                if (!service.awaitTermination(0, TimeUnit.SECONDS)) {
                     System.err.println(getApplication().getString(R.string.service_fail));
+                }
             }
         } catch (InterruptedException ie) {
             service.shutdownNow();
