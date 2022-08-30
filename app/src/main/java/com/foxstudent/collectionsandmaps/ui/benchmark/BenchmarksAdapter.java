@@ -34,7 +34,7 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
 
     @Override
     public void onBindViewHolder(@NonNull BenchmarksAdapter.ItemHolder holder, int position) {
-        holder.bind(position);
+        holder.bind(getItem(position));
     }
 
     public void running(boolean running) {
@@ -52,8 +52,8 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
             progressBar = itemView.findViewById(R.id.progressBar);
         }
 
-        public void bind(int position) {
-            operation.setText(getItem(position).name);
+        public void bind(Cell cell) {
+            operation.setText(cell.name);
 
             if (running) {
                 progressBar.animate()

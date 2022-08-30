@@ -9,6 +9,8 @@ import com.foxstudent.collectionsandmaps.databinding.ActivityMainBinding;
 import com.foxstudent.collectionsandmaps.ui.benchmark.BenchmarksFragment;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,12 +27,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFragments() {
-        BenchmarksFragment collectionFragment = BenchmarksFragment.newInstance("collections");
-        BenchmarksFragment mapFragment = BenchmarksFragment.newInstance("maps");
-
         StateAdapter stateAdapter = new StateAdapter(getSupportFragmentManager(), getLifecycle());
-        stateAdapter.addFragment(collectionFragment, getString(R.string.collection));
-        stateAdapter.addFragment(mapFragment, getString(R.string.map));
+        stateAdapter.addFragment(BenchmarksFragment.newInstance("COLLECTIONS"), getString(R.string.collection));
+        stateAdapter.addFragment(BenchmarksFragment.newInstance("MAPS"), getString(R.string.map));
 
         binding.viewPager2.setAdapter(stateAdapter);
         tabLayoutMediator = new TabLayoutMediator(binding.tabLayout, binding.viewPager2, (tab, position) -> {

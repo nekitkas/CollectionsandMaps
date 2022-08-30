@@ -2,6 +2,7 @@ package com.foxstudent.collectionsandmaps.ui.benchmark;
 
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -26,7 +27,10 @@ import java.util.concurrent.TimeUnit;
 
 public class BenchmarksViewModel extends AndroidViewModel {
 
+    private static final String COLLECTION = "COLLECTIONS";
+    private static final String MAP = "MAPS";
     private final static String EMPTY_VALUE = "N/A";
+    private static ArrayList<String> keys;
     private final List<Cell> mapCells = new ArrayList<>();
     private final List<Cell> collectionCells = new ArrayList<>();
     private final List<String> mapNames = new ArrayList<>();
@@ -39,24 +43,30 @@ public class BenchmarksViewModel extends AndroidViewModel {
     private MutableLiveData<String> threadValue;
     private ExecutorService service;
 
-    public BenchmarksViewModel(@NonNull Application application) {
+    public BenchmarksViewModel(@NonNull Application application, ArrayList<String> keys) {
         super(application);
+        BenchmarksViewModel.keys = keys;
+        Log.d("TAG", "BenchmarksViewModel: " + keys.toString());
     }
 
     public LiveData<List<Cell>> getMapCell() {
-        if (mapCell == null) {
-            mapCell = new MutableLiveData<>();
-            setMapCell();
-            mapCell.setValue(mapCells);
+        if(keys.contains(MAP)) {
+            if (mapCell == null) {
+                mapCell = new MutableLiveData<>();
+                setMapCell();
+                mapCell.setValue(mapCells);
+            }
         }
         return mapCell;
     }
 
     public LiveData<List<Cell>> getCollectionCell() {
-        if (collectionCell == null) {
-            collectionCell = new MutableLiveData<>();
-            setCollectionCell();
-            collectionCell.setValue(collectionCells);
+        if(keys.contains(COLLECTION)){
+            if (collectionCell == null) {
+                collectionCell = new MutableLiveData<>();
+                setCollectionCell();
+                collectionCell.setValue(collectionCells);
+            }
         }
         return collectionCell;
     }

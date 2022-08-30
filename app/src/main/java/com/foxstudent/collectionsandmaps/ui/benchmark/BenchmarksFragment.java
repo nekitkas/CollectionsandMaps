@@ -13,23 +13,28 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.foxstudent.collectionsandmaps.R;
-import com.foxstudent.collectionsandmaps.databinding.FragmentBinding;
+import com.foxstudent.collectionsandmaps.databinding.FragmentBenchmarkBinding;
 
 import java.util.ArrayList;
 
 public class BenchmarksFragment extends Fragment implements View.OnClickListener {
 
-    private static String fragment;
+    private static final String COLLECTION = "COLLECTIONS";
+    private static final String MAP = "MAPS";
+    private static final String KEY = "KEY";
+    private static final String DEFAULT = "DEFAULT";
+    private static final ArrayList<String> keys = new ArrayList<>();
+    private static String key;
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
-    private FragmentBinding binding;
+    private FragmentBenchmarkBinding binding;
     private BenchmarksViewModel model;
     private boolean running;
 
     public static BenchmarksFragment newInstance(String value) {
         final BenchmarksFragment fragment = new BenchmarksFragment();
-
+        keys.add(value);
         final Bundle args = new Bundle();
-        args.putString("KEY", value);
+        args.putString(KEY, value);
         fragment.setArguments(args);
 
         return fragment;
@@ -38,15 +43,16 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragment = getArguments() != null ? getArguments().getString("KEY") : "default";
-        model = new ViewModelProvider(requireActivity()).get(BenchmarksViewModel.class);
+        key = getArguments() == null ? DEFAULT : getArguments().getString(KEY);
+        BenchmarksVMFactory factory = new BenchmarksVMFactory(requireActivity().getApplication(), keys);
+        model = new ViewModelProvider(requireActivity(), factory).get(BenchmarksViewModel.class);
     }
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState
     ) {
-        binding = FragmentBinding.inflate(inflater, container, false);
+        binding = FragmentBenchmarkBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -68,11 +74,12 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
 
         binding.button.setOnClickListener(this);
 
-        if (fragment.equals("collections")) {
+        if(key.equals(COLLECTION)) {
             model.getCollectionCell().observe(requireActivity(), cellList -> {
                 adapter.submitList(new ArrayList<>(cellList));
             });
-        } else if (fragment.equals("maps")) {
+        }
+        if(key.equals(MAP)) {
             model.getMapCell().observe(requireActivity(), cellList -> {
                 adapter.submitList(new ArrayList<>(cellList));
             });
@@ -98,9 +105,10 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
             binding.button.setText(R.string.stop);
             model.setThreadValue(threadInput);
             model.setInputValue(operationInput);
-            if (fragment.equals("collections")) {
+
+            if (key.equals(COLLECTION)) {
                 model.setCollectionData();
-            } else if (fragment.equals("maps")) {
+            } else if (key.equals(MAP)) {
                 model.setMapData();
             }
         }

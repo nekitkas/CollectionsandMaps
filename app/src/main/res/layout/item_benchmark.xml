@@ -14,7 +14,6 @@
         android:id="@+id/operation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
         android:padding="5dp"
         android:textColor="#9F1616"
         android:textSize="12sp"
