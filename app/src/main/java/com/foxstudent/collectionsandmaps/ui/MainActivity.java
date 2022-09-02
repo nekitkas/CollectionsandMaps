@@ -9,7 +9,6 @@ import com.foxstudent.collectionsandmaps.databinding.ActivityMainBinding;
 import com.foxstudent.collectionsandmaps.ui.benchmark.BenchmarksFragment;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {

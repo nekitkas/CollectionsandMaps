@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,7 +20,6 @@ import com.foxstudent.collectionsandmaps.models.Cell;
 
 public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemHolder> {
 
-    private boolean running;
 
     BenchmarksAdapter() {
         super(DIFF_CALLBACK);
@@ -37,51 +37,28 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
         holder.bind(getItem(position));
     }
 
-    public void running(boolean running) {
-        this.running = running;
-    }
 
-
-    public class ItemHolder extends RecyclerView.ViewHolder {
-        private final TextView operation;
+    public static class ItemHolder extends RecyclerView.ViewHolder {
+        private final TextView operation, result;
         private final ProgressBar progressBar;
 
         ItemHolder(View itemView) {
             super(itemView);
             operation = itemView.findViewById(R.id.operation);
             progressBar = itemView.findViewById(R.id.progressBar);
+            result = itemView.findViewById(R.id.result);
         }
 
         public void bind(Cell cell) {
             operation.setText(cell.name);
+            result.setText(cell.result);
 
-            if (running) {
-                progressBar.animate()
-                        .translationY(progressBar.getHeight())
-                        .alpha(0.0f)
-                        .setDuration(300)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-                                super.onAnimationStart(animation);
-                                progressBar.setVisibility(View.VISIBLE);
-                            }
-                        });
+            if (cell.result == null) {
+                progressBar.setVisibility(View.VISIBLE);
             } else {
-                progressBar.animate()
-                        .translationY(progressBar.getHeight())
-                        .alpha(0.0f)
-                        .setDuration(300)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                progressBar.setVisibility(View.GONE);
-                            }
-                        });
+                progressBar.setVisibility(View.INVISIBLE);
             }
         }
-
     }
 
 
@@ -93,8 +70,8 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
         }
 
         @Override
-        public boolean areContentsTheSame(Cell oldItem, Cell newItem) {
-            return oldItem.name.equals(newItem.name);
+        public boolean areContentsTheSame(Cell oldItem, @NonNull Cell newItem) {
+            return oldItem.equals(newItem);
         }
     };
 }

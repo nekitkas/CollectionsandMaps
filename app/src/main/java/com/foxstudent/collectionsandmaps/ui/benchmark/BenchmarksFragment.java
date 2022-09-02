@@ -19,12 +19,9 @@ import java.util.ArrayList;
 
 public class BenchmarksFragment extends Fragment implements View.OnClickListener {
 
-    private static final String COLLECTION = "COLLECTIONS";
-    private static final String MAP = "MAPS";
+
     private static final String KEY = "KEY";
     private static final String DEFAULT = "DEFAULT";
-    private static final ArrayList<String> keys = new ArrayList<>();
-    private static String key;
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private FragmentBenchmarkBinding binding;
     private BenchmarksViewModel model;
@@ -32,7 +29,6 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
 
     public static BenchmarksFragment newInstance(String value) {
         final BenchmarksFragment fragment = new BenchmarksFragment();
-        keys.add(value);
         final Bundle args = new Bundle();
         args.putString(KEY, value);
         fragment.setArguments(args);
@@ -43,9 +39,9 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        key = getArguments() == null ? DEFAULT : getArguments().getString(KEY);
-        BenchmarksVMFactory factory = new BenchmarksVMFactory(requireActivity().getApplication(), keys);
-        model = new ViewModelProvider(requireActivity(), factory).get(BenchmarksViewModel.class);
+        String arg = getArguments() == null ? DEFAULT : getArguments().getString(KEY);
+        BenchmarksVMFactory factory = new BenchmarksVMFactory(requireActivity().getApplication(), arg);
+        model = new ViewModelProvider(getViewModelStore(), factory).get(BenchmarksViewModel.class);
     }
 
     @Override
@@ -60,12 +56,16 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        model.getOperationInput().observe(requireActivity(), input -> {
-            binding.etOperations.setText(input);
-        });
-
-        model.getThreadInput().observe(requireActivity(), input -> {
-            binding.etThreads.setText(input);
+        model.getOperationInput().observe(requireActivity(), input -> binding.etOperations.setText(input));
+        model.getThreadInput().observe(requireActivity(), input -> binding.etThreads.setText(input));
+        model.getCells().observe(requireActivity(), cells -> adapter.submitList(new ArrayList<>(cells)));
+        model.getState().observe(requireActivity(), state -> {
+            running = state;
+            if (running) {
+                binding.button.setText(R.string.stop);
+            } else {
+                binding.button.setText(R.string.start);
+            }
         });
 
         GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
@@ -73,17 +73,6 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
         binding.rvGrid.setAdapter(adapter);
 
         binding.button.setOnClickListener(this);
-
-        if(key.equals(COLLECTION)) {
-            model.getCollectionCell().observe(requireActivity(), cellList -> {
-                adapter.submitList(new ArrayList<>(cellList));
-            });
-        }
-        if(key.equals(MAP)) {
-            model.getMapCell().observe(requireActivity(), cellList -> {
-                adapter.submitList(new ArrayList<>(cellList));
-            });
-        }
     }
 
     @Override
@@ -91,26 +80,17 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
         String operationInput = binding.etOperations.getText().toString().trim();
         String threadInput = binding.etThreads.getText().toString().trim();
         if (operationInput.isEmpty() || threadInput.isEmpty()) {
-            Toast.makeText(requireActivity(), R.string.empty_field, Toast.LENGTH_LONG).show();
-        } else if (running) {
-            Toast.makeText(requireActivity(), R.string.calc_stop, Toast.LENGTH_LONG).show();
-            binding.button.setText(R.string.start);
-            running = false;
-            adapter.running(false);
-            model.shutDown();
-        } else {
-            running = true;
-            adapter.running(true);
-            Toast.makeText(requireActivity(), R.string.calc_start, Toast.LENGTH_LONG).show();
-            binding.button.setText(R.string.stop);
-            model.setThreadValue(threadInput);
+            Toast.makeText(requireActivity(), R.string.empty_field, Toast.LENGTH_SHORT).show();
+        } else if (!running) {
+            Toast.makeText(requireActivity(), R.string.calc_start, Toast.LENGTH_SHORT).show();
             model.setInputValue(operationInput);
-
-            if (key.equals(COLLECTION)) {
-                model.setCollectionData();
-            } else if (key.equals(MAP)) {
-                model.setMapData();
-            }
+            model.setThreadValue(threadInput);
+            model.setState(true);
+            model.run();
+        } else {
+            Toast.makeText(requireActivity(), R.string.calc_stopping, Toast.LENGTH_SHORT).show();
+            model.setState(false);
+            Toast.makeText(requireActivity(), model.shutDown(), Toast.LENGTH_SHORT).show();
         }
     }
 

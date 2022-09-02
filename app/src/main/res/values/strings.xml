@@ -11,6 +11,7 @@
     <string name="empty_field">Empty field</string>
     <string name="calc_start">Calculation started</string>
     <string name="calc_stop">Calculation stopped</string>
+    <string name="calc_stopping">Stopping calculations…</string>
     <string name="service_fail">Pool did not terminate</string>
 
     <string name="arrayAddToStart">Adding to start in ArrayList:</string>
