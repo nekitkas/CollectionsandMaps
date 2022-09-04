@@ -53,8 +53,16 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
             result.setText(cell.result);
 
             if (cell.result == null) {
+                progressBar.animate()
+                        .setListener(null)
+                        .setDuration(60000)
+                        .setStartDelay(0);
                 progressBar.setVisibility(View.VISIBLE);
             } else {
+                progressBar.animate()
+                        .setListener(null)
+                        .setDuration(60000)
+                        .setStartDelay(0);
                 progressBar.setVisibility(View.INVISIBLE);
             }
         }

@@ -66,9 +66,9 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
         });
 
         int columns;
-        if(getArguments().getString(KEY).equals(Constants.COLLECTION.toString())){
+        if (getArguments().getString(KEY).equals(Constants.COLLECTION.toString())) {
             columns = 3;
-        }else{
+        } else {
             columns = 2;
         }
 
@@ -83,7 +83,7 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         String operationInput = binding.etOperations.getText().toString().trim();
         String threadInput = binding.etThreads.getText().toString().trim();
-        model.setInputs(operationInput,threadInput);
+        model.setInputs(operationInput, threadInput);
         Toast.makeText(requireActivity(), model.run(), Toast.LENGTH_SHORT).show();
     }
 

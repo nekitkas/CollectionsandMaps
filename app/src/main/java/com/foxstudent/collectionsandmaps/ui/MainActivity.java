@@ -11,7 +11,6 @@ import com.foxstudent.collectionsandmaps.models.Constants;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 
-
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;

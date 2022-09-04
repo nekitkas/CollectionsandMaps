@@ -44,23 +44,23 @@ public class BenchmarksViewModel extends ViewModel {
 
     public LiveData<List<Cell>> getCells() {
         if (fragmentArgs.equals(Constants.COLLECTION.toString())) {
-            collectionCell.setValue(setCells());
+            collectionCell.setValue(setCells(EMPTY_VALUE));
             return collectionCell;
         } else {
-            mapCell.setValue(setCells());
+            mapCell.setValue(setCells(EMPTY_VALUE));
             return mapCell;
         }
     }
 
-    public ArrayList<Cell> setCells() {
+    public ArrayList<Cell> setCells(String result) {
         ArrayList<Cell> cells = new ArrayList<>();
-        if(fragmentArgs.equals(Constants.COLLECTION.toString())){
+        if (fragmentArgs.equals(Constants.COLLECTION.toString())) {
             for (int i = 0; i < 21; i++) {
-                cells.add(new Cell(getNames().get(i), EMPTY_VALUE));
+                cells.add(new Cell(getNames().get(i), result));
             }
-        }else {
+        } else {
             for (int i = 0; i < 6; i++) {
-                cells.add(new Cell(getNames().get(i), EMPTY_VALUE));
+                cells.add(new Cell(getNames().get(i), result));
             }
         }
         return cells;
@@ -87,12 +87,12 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
 
-    public void setData(){
+    public void setData() {
         int value = Integer.parseInt((inputValue));
         service = Executors.newFixedThreadPool(Integer.parseInt((threadValue)));
         AtomicInteger tasksCompleted = new AtomicInteger();
 
-        if(fragmentArgs.equals(Constants.COLLECTION.toString())){
+        if (fragmentArgs.equals(Constants.COLLECTION.toString())) {
             android.os.Handler handler = new Handler(message -> {
                 if (message.what == 20) {
                     setIsCalculating(false);
@@ -310,11 +310,16 @@ public class BenchmarksViewModel extends ViewModel {
     public int run() {
         if (threadValue.isEmpty() && inputValue.isEmpty()) {
             return R.string.empty_field;
-        } else if(isCalculating.getValue()){
+        } else if (isCalculating.getValue()) {
             setIsCalculating(false);
             shutDown();
             return R.string.calc_stop;
-        }else{
+        } else {
+            if (fragmentArgs.equals(Constants.COLLECTION.toString())) {
+                collectionCell.setValue(setCells(null));
+            } else {
+                mapCell.setValue(setCells(null));
+            }
             setIsCalculating(true);
             setData();
             return R.string.calc_start;
