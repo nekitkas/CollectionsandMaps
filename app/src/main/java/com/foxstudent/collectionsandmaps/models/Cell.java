@@ -1,12 +1,14 @@
 package com.foxstudent.collectionsandmaps.models;
 
+import androidx.annotation.StringRes;
+
 import java.util.Objects;
 
 public class Cell {
-    public final String name;
+    public final int name;
     public final String result;
 
-    public Cell(String name, String result) {
+    public Cell(@StringRes int name, String result) {
         this.name = name;
         this.result = result;
     }

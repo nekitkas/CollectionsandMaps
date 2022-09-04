@@ -1,8 +1,5 @@
 package com.foxstudent.collectionsandmaps.ui.benchmark;
 
-import android.app.Application;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -10,12 +7,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 public class BenchmarksVMFactory implements ViewModelProvider.Factory {
 
-    private final Application application;
     private final String arg;
 
-    BenchmarksVMFactory(Application application, String arg) {
+    BenchmarksVMFactory(String arg) {
         this.arg = arg;
-        this.application = application;
     }
 
     @SuppressWarnings("unchecked")
@@ -23,7 +18,7 @@ public class BenchmarksVMFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(BenchmarksViewModel.class)) {
-            return (T) new BenchmarksViewModel(application, arg);
+            return (T) new BenchmarksViewModel(arg);
         }
         throw new IllegalArgumentException("Failed to create ViewModel");
     }

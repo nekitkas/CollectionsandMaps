@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.foxstudent.collectionsandmaps.R;
 import com.foxstudent.collectionsandmaps.databinding.FragmentBenchmarkBinding;
+import com.foxstudent.collectionsandmaps.models.Constants;
 
 import java.util.ArrayList;
 
@@ -25,7 +26,6 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private FragmentBenchmarkBinding binding;
     private BenchmarksViewModel model;
-    private boolean running;
 
     public static BenchmarksFragment newInstance(String value) {
         final BenchmarksFragment fragment = new BenchmarksFragment();
@@ -39,8 +39,8 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String arg = getArguments() == null ? DEFAULT : getArguments().getString(KEY);
-        BenchmarksVMFactory factory = new BenchmarksVMFactory(requireActivity().getApplication(), arg);
+        String args = getArguments() == null ? DEFAULT : getArguments().getString(KEY);
+        BenchmarksVMFactory factory = new BenchmarksVMFactory(args);
         model = new ViewModelProvider(getViewModelStore(), factory).get(BenchmarksViewModel.class);
     }
 
@@ -56,19 +56,23 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        model.getOperationInput().observe(requireActivity(), input -> binding.etOperations.setText(input));
-        model.getThreadInput().observe(requireActivity(), input -> binding.etThreads.setText(input));
         model.getCells().observe(requireActivity(), cells -> adapter.submitList(new ArrayList<>(cells)));
-        model.getState().observe(requireActivity(), state -> {
-            running = state;
-            if (running) {
+        model.getIsCalculating().observe(requireActivity(), isCalculating -> {
+            if (isCalculating) {
                 binding.button.setText(R.string.stop);
             } else {
                 binding.button.setText(R.string.start);
             }
         });
 
-        GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
+        int columns;
+        if(getArguments().getString(KEY).equals(Constants.COLLECTION.toString())){
+            columns = 3;
+        }else{
+            columns = 2;
+        }
+
+        GridLayoutManager manager = new GridLayoutManager(getContext(), columns);
         binding.rvGrid.setLayoutManager(manager);
         binding.rvGrid.setAdapter(adapter);
 
@@ -79,19 +83,8 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         String operationInput = binding.etOperations.getText().toString().trim();
         String threadInput = binding.etThreads.getText().toString().trim();
-        if (operationInput.isEmpty() || threadInput.isEmpty()) {
-            Toast.makeText(requireActivity(), R.string.empty_field, Toast.LENGTH_SHORT).show();
-        } else if (!running) {
-            Toast.makeText(requireActivity(), R.string.calc_start, Toast.LENGTH_SHORT).show();
-            model.setInputValue(operationInput);
-            model.setThreadValue(threadInput);
-            model.setState(true);
-            model.run();
-        } else {
-            Toast.makeText(requireActivity(), R.string.calc_stopping, Toast.LENGTH_SHORT).show();
-            model.setState(false);
-            Toast.makeText(requireActivity(), model.shutDown(), Toast.LENGTH_SHORT).show();
-        }
+        model.setInputs(operationInput,threadInput);
+        Toast.makeText(requireActivity(), model.run(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
