@@ -65,18 +65,20 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        int columns;
-        if (getArguments().getString(KEY).equals(Constants.COLLECTION.toString())) {
-            columns = 3;
-        } else {
-            columns = 2;
-        }
-
-        GridLayoutManager manager = new GridLayoutManager(getContext(), columns);
+        GridLayoutManager manager = new GridLayoutManager(getContext(), getSpanCount());
         binding.rvGrid.setLayoutManager(manager);
         binding.rvGrid.setAdapter(adapter);
 
         binding.button.setOnClickListener(this);
+    }
+
+    private int getSpanCount() {
+        String argument = getArguments().getString(KEY);
+        if (argument.equals(Constants.COLLECTION.toString())) {
+            return 3;
+        } else {
+            return 2;
+        }
     }
 
     @Override
