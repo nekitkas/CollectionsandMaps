@@ -28,33 +28,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BenchmarksViewModel extends ViewModel {
 
     private final static String EMPTY_VALUE = "N/A";
-    private final ConcurrentHashMap<Integer, String> mapResult = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Integer, String> collectionResult = new ConcurrentHashMap<>();
-    private final String fragmentArgs;
-    private final MutableLiveData<List<Cell>> collectionCell = new MutableLiveData<>();
-    private final MutableLiveData<List<Cell>> mapCell = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isCalculating = new MutableLiveData<>();
-    private String inputValue, threadValue;
+    private final String type;
+    private final ConcurrentHashMap<Integer, String> results = new ConcurrentHashMap<>();
+    private final MutableLiveData<List<Cell>> cells = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isCalculating = new MutableLiveData<>(false);
     private ExecutorService service;
 
 
     public BenchmarksViewModel(String args) {
-        this.fragmentArgs = args;
+        this.type = args;
     }
 
     public LiveData<List<Cell>> getCells() {
-        if (fragmentArgs.equals(Constants.COLLECTION.toString())) {
-            collectionCell.setValue(setCells(EMPTY_VALUE));
-            return collectionCell;
-        } else {
-            mapCell.setValue(setCells(EMPTY_VALUE));
-            return mapCell;
-        }
+        cells.setValue(createCells(EMPTY_VALUE));
+        return cells;
     }
 
-    public ArrayList<Cell> setCells(String result) {
-        ArrayList<Cell> cells = new ArrayList<>();
-        if (fragmentArgs.equals(Constants.COLLECTION.toString())) {
+    public List<Cell> createCells(String result) {
+        final ArrayList<Cell> cells = new ArrayList<>();
+        if (type.equals(Constants.COLLECTION.toString())) {
             for (int i = 0; i < 21; i++) {
                 cells.add(new Cell(getNames().get(i), result));
             }
@@ -66,34 +58,19 @@ public class BenchmarksViewModel extends ViewModel {
         return cells;
     }
 
-
     public void updateCell(int position) {
-        if (fragmentArgs.equals(Constants.COLLECTION.toString())) {
-            List<Cell> list = collectionCell.getValue();
-            list.remove(position);
-            list.add(position, new Cell(getNames().get(position), collectionResult.get(position)));
-            collectionCell.postValue(list);
-        } else {
-            List<Cell> list = mapCell.getValue();
-            list.remove(position);
-            list.add(position, new Cell(getNames().get(position), mapResult.get(position)));
-            mapCell.postValue(list);
-        }
+        List<Cell> list = cells.getValue();
+        list.set(position, new Cell(getNames().get(position), results.get(position)));
+        cells.postValue(list);
     }
 
-    public void setInputs(String operation, String thread) {
-        inputValue = operation;
-        threadValue = thread;
-    }
-
-
-    public void setData() {
-        int value = Integer.parseInt((inputValue));
-        service = Executors.newFixedThreadPool(Integer.parseInt((threadValue)));
+    public void setData(String operation, String thread) {
+        int value = Integer.parseInt((operation));
+        service = Executors.newFixedThreadPool(Integer.parseInt((thread)));
         AtomicInteger tasksCompleted = new AtomicInteger();
 
-        if (fragmentArgs.equals(Constants.COLLECTION.toString())) {
-            android.os.Handler handler = new Handler(message -> {
+        if (type.equals(Constants.COLLECTION.toString())) {
+            Handler handler = new Handler(message -> {
                 if (message.what == 20) {
                     setIsCalculating(false);
                     shutDown();
@@ -102,112 +79,112 @@ public class BenchmarksViewModel extends ViewModel {
             });
 
             service.execute(() -> {
-                collectionResult.put(0, Collections.listAddInTheBeginning(new ArrayList<>(), value));
+                results.put(0, Collections.listAddInTheBeginning(new ArrayList<>(), value));
                 updateCell(0);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(1, Collections.listAddInTheBeginning(new LinkedList<>(), value));
+                results.put(1, Collections.listAddInTheBeginning(new LinkedList<>(), value));
                 updateCell(1);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(2, Collections.listAddInTheBeginning(new CopyOnWriteArrayList<>(), value));
+                results.put(2, Collections.listAddInTheBeginning(new CopyOnWriteArrayList<>(), value));
                 updateCell(2);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(3, Collections.listAddInTheMiddle(new ArrayList<>(), value));
+                results.put(3, Collections.listAddInTheMiddle(new ArrayList<>(), value));
                 updateCell(3);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(4, Collections.listAddInTheMiddle(new LinkedList<>(), value));
+                results.put(4, Collections.listAddInTheMiddle(new LinkedList<>(), value));
                 updateCell(4);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(5, Collections.listAddInTheMiddle(new CopyOnWriteArrayList<>(), value));
+                results.put(5, Collections.listAddInTheMiddle(new CopyOnWriteArrayList<>(), value));
                 updateCell(5);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(6, Collections.listAddInTheEnd(new ArrayList<>(), value));
+                results.put(6, Collections.listAddInTheEnd(new ArrayList<>(), value));
                 updateCell(6);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(7, Collections.listAddInTheEnd(new LinkedList<>(), value));
+                results.put(7, Collections.listAddInTheEnd(new LinkedList<>(), value));
                 updateCell(7);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(8, Collections.listAddInTheEnd(new CopyOnWriteArrayList<>(), value));
+                results.put(8, Collections.listAddInTheEnd(new CopyOnWriteArrayList<>(), value));
                 updateCell(8);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(9, Collections.listRemoveInTheBeginning(new ArrayList<>(), value));
+                results.put(9, Collections.listRemoveInTheBeginning(new ArrayList<>(), value));
                 updateCell(9);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(10, Collections.listRemoveInTheBeginning(new LinkedList<>(), value));
+                results.put(10, Collections.listRemoveInTheBeginning(new LinkedList<>(), value));
                 updateCell(10);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(11, Collections.listRemoveInTheBeginning(new CopyOnWriteArrayList<>(), value));
+                results.put(11, Collections.listRemoveInTheBeginning(new CopyOnWriteArrayList<>(), value));
                 updateCell(11);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(12, Collections.listRemoveInTheMiddle(new ArrayList<>(), value));
+                results.put(12, Collections.listRemoveInTheMiddle(new ArrayList<>(), value));
                 updateCell(12);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(13, Collections.listRemoveInTheMiddle(new LinkedList<>(), value));
+                results.put(13, Collections.listRemoveInTheMiddle(new LinkedList<>(), value));
                 updateCell(13);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(14, Collections.listRemoveInTheMiddle(new CopyOnWriteArrayList<>(), value));
+                results.put(14, Collections.listRemoveInTheMiddle(new CopyOnWriteArrayList<>(), value));
                 updateCell(14);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(15, Collections.listRemoveInTheEnd(new ArrayList<>(), value));
+                results.put(15, Collections.listRemoveInTheEnd(new ArrayList<>(), value));
                 updateCell(15);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(16, Collections.listRemoveInTheEnd(new LinkedList<>(), value));
+                results.put(16, Collections.listRemoveInTheEnd(new LinkedList<>(), value));
                 updateCell(16);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(17, Collections.listRemoveInTheEnd(new CopyOnWriteArrayList<>(), value));
+                results.put(17, Collections.listRemoveInTheEnd(new CopyOnWriteArrayList<>(), value));
                 updateCell(17);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(18, Collections.listSearchByValue(new ArrayList<>(), value));
+                results.put(18, Collections.listSearchByValue(new ArrayList<>(), value));
                 updateCell(18);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(19, Collections.listSearchByValue(new LinkedList<>(), value));
+                results.put(19, Collections.listSearchByValue(new LinkedList<>(), value));
                 updateCell(19);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                collectionResult.put(20, Collections.listSearchByValue(new CopyOnWriteArrayList<>(), value));
+                results.put(20, Collections.listSearchByValue(new CopyOnWriteArrayList<>(), value));
                 updateCell(20);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
         } else {
-            android.os.Handler handler = new Handler(message -> {
+            Handler handler = new Handler(message -> {
                 if (message.what == 5) {
                     setIsCalculating(false);
                     shutDown();
@@ -215,32 +192,32 @@ public class BenchmarksViewModel extends ViewModel {
                 return true;
             });
             service.execute(() -> {
-                mapResult.put(0, Collections.mapAddingNew(new TreeMap<>(), value));
+                results.put(0, Collections.mapAddingNew(new TreeMap<>(), value));
                 updateCell(0);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                mapResult.put(1, Collections.mapAddingNew(new HashMap<>(), value));
+                results.put(1, Collections.mapAddingNew(new HashMap<>(), value));
                 updateCell(1);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                mapResult.put(2, Collections.mapSearchByKey(new TreeMap<>(), value));
+                results.put(2, Collections.mapSearchByKey(new TreeMap<>(), value));
                 updateCell(2);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                mapResult.put(3, Collections.mapSearchByKey(new HashMap<>(), value));
+                results.put(3, Collections.mapSearchByKey(new HashMap<>(), value));
                 updateCell(3);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                mapResult.put(4, Collections.mapRemoving(new TreeMap<>(), value));
+                results.put(4, Collections.mapRemoving(new TreeMap<>(), value));
                 updateCell(4);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
-                mapResult.put(5, Collections.mapRemoving(new HashMap<>(), value));
+                results.put(5, Collections.mapRemoving(new HashMap<>(), value));
                 updateCell(5);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
@@ -263,8 +240,8 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public ArrayList<Integer> getNames() {
-        ArrayList<Integer> names = new ArrayList<>();
-        if (fragmentArgs.equals(Constants.COLLECTION.toString())) {
+        final ArrayList<Integer> names = new ArrayList<>();
+        if (type.equals(Constants.COLLECTION.toString())) {
             names.add(R.string.arrayAddToStart);
             names.add(R.string.linkedListAddToStart);
             names.add(R.string.copyOnWriteAddToStart);
@@ -298,7 +275,6 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public LiveData<Boolean> getIsCalculating() {
-        isCalculating.setValue(false);
         return isCalculating;
     }
 
@@ -307,22 +283,26 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     @StringRes
-    public int run() {
-        if (threadValue.isEmpty() && inputValue.isEmpty()) {
+    public int run(String operation, String thread) {
+        if (operation.isEmpty() && thread.isEmpty()) {
             return R.string.empty_field;
         } else if (isCalculating.getValue()) {
             setIsCalculating(false);
             shutDown();
             return R.string.calc_stop;
         } else {
-            if (fragmentArgs.equals(Constants.COLLECTION.toString())) {
-                collectionCell.setValue(setCells(null));
-            } else {
-                mapCell.setValue(setCells(null));
-            }
+            cells.setValue(createCells(null));
             setIsCalculating(true);
-            setData();
+            setData(operation, thread);
             return R.string.calc_start;
+        }
+    }
+
+    public int getSpanCount() {
+        if (type.equals(Constants.COLLECTION.toString())) {
+            return 3;
+        } else {
+            return 2;
         }
     }
 }

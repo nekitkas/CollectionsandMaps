@@ -1,5 +1,7 @@
 package com.foxstudent.collectionsandmaps.ui.benchmark;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,21 +51,47 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
         public void bind(Cell cell) {
             operation.setText(cell.name);
             result.setText(cell.result);
+            progressBar.setVisibility(View.GONE);
 
+            crossFadeAnimation(cell);
+        }
+
+        private void crossFadeAnimation(Cell cell) {
             if (cell.result == null) {
-                progressBar.animate()
-                        .setListener(null)
-                        .setDuration(60000)
-                        .setStartDelay(0);
+                progressBar.setAlpha(0f);
                 progressBar.setVisibility(View.VISIBLE);
-            } else {
                 progressBar.animate()
-                        .setListener(null)
-                        .setDuration(60000)
-                        .setStartDelay(0);
-                progressBar.setVisibility(View.INVISIBLE);
+                        .alpha(1f)
+                        .setDuration(600)
+                        .setListener(null);
+                result.animate()
+                        .alpha(0f)
+                        .setDuration(600)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                result.setVisibility(View.INVISIBLE);
+                            }
+                        });
+            } else {
+                result.setAlpha(0f);
+                result.setVisibility(View.VISIBLE);
+                result.animate()
+                        .alpha(1f)
+                        .setDuration(600)
+                        .setListener(null);
+                progressBar.animate()
+                        .alpha(0f)
+                        .setDuration(600)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                            }
+                        });
             }
         }
+
     }
 
 

@@ -11,7 +11,7 @@ public class Collections {
         long startTime = System.currentTimeMillis();
         runnable.run();
         long endTime = System.currentTimeMillis();
-        return (float) (endTime - startTime) / 1000 + "ms";
+        return String.valueOf((float) (endTime - startTime) / 1000);
     }
 
     public static String mapAddingNew(Map<Integer, Integer> map, int value) {

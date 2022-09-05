@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.foxstudent.collectionsandmaps.R;
 import com.foxstudent.collectionsandmaps.databinding.FragmentBenchmarkBinding;
-import com.foxstudent.collectionsandmaps.models.Constants;
 
 import java.util.ArrayList;
 
@@ -65,28 +64,18 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        GridLayoutManager manager = new GridLayoutManager(getContext(), getSpanCount());
+        GridLayoutManager manager = new GridLayoutManager(getContext(), model.getSpanCount());
         binding.rvGrid.setLayoutManager(manager);
         binding.rvGrid.setAdapter(adapter);
 
         binding.button.setOnClickListener(this);
     }
 
-    private int getSpanCount() {
-        String argument = getArguments().getString(KEY);
-        if (argument.equals(Constants.COLLECTION.toString())) {
-            return 3;
-        } else {
-            return 2;
-        }
-    }
-
     @Override
     public void onClick(View v) {
         String operationInput = binding.etOperations.getText().toString().trim();
         String threadInput = binding.etThreads.getText().toString().trim();
-        model.setInputs(operationInput, threadInput);
-        Toast.makeText(requireActivity(), model.run(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireActivity(), model.run(operationInput, threadInput), Toast.LENGTH_SHORT).show();
     }
 
     @Override
