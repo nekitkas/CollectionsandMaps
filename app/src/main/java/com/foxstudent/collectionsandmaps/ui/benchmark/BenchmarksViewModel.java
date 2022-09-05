@@ -29,7 +29,7 @@ public class BenchmarksViewModel extends ViewModel {
 
     private final static String EMPTY_VALUE = "N/A";
     private final String type;
-    private final ConcurrentHashMap<Integer, String> results = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer, Float> results = new ConcurrentHashMap<>();
     private final MutableLiveData<List<Cell>> cells = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isCalculating = new MutableLiveData<>(false);
     private ExecutorService service;
@@ -40,12 +40,11 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public LiveData<List<Cell>> getCells() {
-        cells.setValue(createCells(EMPTY_VALUE));
         return cells;
     }
 
     public List<Cell> createCells(String result) {
-        final ArrayList<Cell> cells = new ArrayList<>();
+        final List<Cell> cells = new ArrayList<>();
         if (type.equals(Constants.COLLECTION.toString())) {
             for (int i = 0; i < 21; i++) {
                 cells.add(new Cell(getNames().get(i), result));
@@ -60,11 +59,11 @@ public class BenchmarksViewModel extends ViewModel {
 
     public void updateCell(int position) {
         List<Cell> list = cells.getValue();
-        list.set(position, new Cell(getNames().get(position), results.get(position)));
+        list.set(position, new Cell(getNames().get(position), results.get(position).toString()));
         cells.postValue(list);
     }
 
-    public void setData(String operation, String thread) {
+    public void executeBenchmarks(String operation, String thread) {
         int value = Integer.parseInt((operation));
         service = Executors.newFixedThreadPool(Integer.parseInt((thread)));
         AtomicInteger tasksCompleted = new AtomicInteger();
@@ -293,7 +292,7 @@ public class BenchmarksViewModel extends ViewModel {
         } else {
             cells.setValue(createCells(null));
             setIsCalculating(true);
-            setData(operation, thread);
+            executeBenchmarks(operation, thread);
             return R.string.calc_start;
         }
     }
@@ -304,5 +303,9 @@ public class BenchmarksViewModel extends ViewModel {
         } else {
             return 2;
         }
+    }
+
+    public void setDefaultCellValue() {
+        cells.setValue(createCells(EMPTY_VALUE));
     }
 }

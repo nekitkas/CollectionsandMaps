@@ -7,14 +7,14 @@ import java.util.Map;
 public class Collections {
 
 
-    public static String measureTime(Runnable runnable) {
+    public static float measureTime(Runnable runnable) {
         long startTime = System.currentTimeMillis();
         runnable.run();
         long endTime = System.currentTimeMillis();
-        return String.valueOf((float) (endTime - startTime) / 1000);
+        return (endTime - startTime) / 1000F;
     }
 
-    public static String mapAddingNew(Map<Integer, Integer> map, int value) {
+    public static float mapAddingNew(Map<Integer, Integer> map, int value) {
         return measureTime(() -> {
             for (int i = 0; i < value; i++) {
                 map.put(i, 0);
@@ -22,7 +22,7 @@ public class Collections {
         });
     }
 
-    public static String mapSearchByKey(Map<Integer, Integer> map, int value) {
+    public static float mapSearchByKey(Map<Integer, Integer> map, int value) {
         fillMap(map, value);
         return measureTime(() -> {
             for (int i = 0; i < map.size(); i++) {
@@ -31,7 +31,7 @@ public class Collections {
         });
     }
 
-    public static String mapRemoving(Map<Integer, Integer> map, int value) {
+    public static float mapRemoving(Map<Integer, Integer> map, int value) {
         fillMap(map, value);
         return measureTime(() -> {
             for (int i = 0; i < map.size(); i++) {
@@ -40,7 +40,7 @@ public class Collections {
         });
     }
 
-    public static String listAddInTheBeginning(List<Integer> list, int value) {
+    public static float listAddInTheBeginning(List<Integer> list, int value) {
         return measureTime(() -> {
             for (int i = 0; i < value; i++) {
                 list.add(0, 0);
@@ -48,7 +48,7 @@ public class Collections {
         });
     }
 
-    public static String listAddInTheMiddle(List<Integer> list, int value) {
+    public static float listAddInTheMiddle(List<Integer> list, int value) {
         return measureTime(() -> {
             for (int i = 0; i < value; i++) {
                 list.add(list.size() / 2, 0);
@@ -56,7 +56,7 @@ public class Collections {
         });
     }
 
-    public static String listAddInTheEnd(List<Integer> list, int value) {
+    public static float listAddInTheEnd(List<Integer> list, int value) {
         return measureTime(() -> {
             for (int i = 0; i < value; i++) {
                 list.add(list.size(), 0);
@@ -64,7 +64,7 @@ public class Collections {
         });
     }
 
-    public static String listRemoveInTheBeginning(List<Integer> list, int value) {
+    public static float listRemoveInTheBeginning(List<Integer> list, int value) {
         fillList(list, value);
         return measureTime(() -> {
             for (int i = 0; i < list.size(); i++) {
@@ -73,7 +73,7 @@ public class Collections {
         });
     }
 
-    public static String listRemoveInTheMiddle(List<Integer> list, int value) {
+    public static float listRemoveInTheMiddle(List<Integer> list, int value) {
         fillList(list, value);
         return measureTime(() -> {
             for (int i = 0; i < list.size(); i++) {
@@ -82,7 +82,7 @@ public class Collections {
         });
     }
 
-    public static String listRemoveInTheEnd(List<Integer> list, int value) {
+    public static float listRemoveInTheEnd(List<Integer> list, int value) {
         fillList(list, value);
         return measureTime(() -> {
             for (int i = 0; i < list.size(); i++) {
@@ -91,7 +91,7 @@ public class Collections {
         });
     }
 
-    public static String listSearchByValue(List<Integer> list, int value) {
+    public static float listSearchByValue(List<Integer> list, int value) {
         fillList(list, value);
         return measureTime(() -> {
             for (int i = 0; i < list.size(); i++) {

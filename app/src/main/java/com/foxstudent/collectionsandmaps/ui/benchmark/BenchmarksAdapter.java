@@ -1,7 +1,5 @@
 package com.foxstudent.collectionsandmaps.ui.benchmark;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,42 +51,20 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
             result.setText(cell.result);
             progressBar.setVisibility(View.GONE);
 
-            crossFadeAnimation(cell);
+            progressBarAnimate(cell);
         }
 
-        private void crossFadeAnimation(Cell cell) {
+        private void progressBarAnimate(Cell cell) {
             if (cell.result == null) {
                 progressBar.setAlpha(0f);
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.animate()
                         .alpha(1f)
-                        .setDuration(600)
-                        .setListener(null);
-                result.animate()
-                        .alpha(0f)
-                        .setDuration(600)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                result.setVisibility(View.INVISIBLE);
-                            }
-                        });
+                        .setDuration(600);
             } else {
-                result.setAlpha(0f);
-                result.setVisibility(View.VISIBLE);
-                result.animate()
-                        .alpha(1f)
-                        .setDuration(600)
-                        .setListener(null);
                 progressBar.animate()
                         .alpha(0f)
-                        .setDuration(600)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                progressBar.setVisibility(View.INVISIBLE);
-                            }
-                        });
+                        .setDuration(600);
             }
         }
 

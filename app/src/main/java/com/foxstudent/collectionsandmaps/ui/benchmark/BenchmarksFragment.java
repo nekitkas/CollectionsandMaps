@@ -54,7 +54,7 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        model.setDefaultCellValue();
         model.getCells().observe(requireActivity(), cells -> adapter.submitList(new ArrayList<>(cells)));
         model.getIsCalculating().observe(requireActivity(), isCalculating -> {
             if (isCalculating) {
