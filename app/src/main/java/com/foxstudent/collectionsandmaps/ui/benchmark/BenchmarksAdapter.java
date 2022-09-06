@@ -54,15 +54,13 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
         }
 
         private void progressBarAnimate(Cell cell) {
-            if (cell.result == null) {
-                progressBar.animate()
-                        .alpha(1f)
-                        .setDuration(600);
-            } else {
-                progressBar.animate()
-                        .alpha(0f)
-                        .setDuration(600);
+            float expected = cell.isInProgress ? 1f : 0f;
+            if(progressBar.getAlpha() == expected) {
+                return;
             }
+            progressBar.animate()
+                    .alpha(expected)
+                    .setDuration(600);
         }
 
     }

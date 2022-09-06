@@ -43,27 +43,34 @@ public class BenchmarksViewModel extends ViewModel {
         return cells;
     }
 
-    public List<Cell> createCells(String result) {
+    public List<Cell> createCells(String result, boolean isInProgress) {
         final List<Cell> cells = new ArrayList<>();
         if (type.equals(Constants.COLLECTION.toString())) {
             for (int i = 0; i < 21; i++) {
-                cells.add(new Cell(getNames().get(i), result));
+                cells.add(new Cell(getNames().get(i), result, isInProgress));
             }
         } else {
             for (int i = 0; i < 6; i++) {
-                cells.add(new Cell(getNames().get(i), result));
+                cells.add(new Cell(getNames().get(i), result, isInProgress));
             }
         }
         return cells;
     }
 
-    public void updateCell(int position) {
-        List<Cell> list = cells.getValue();
-        list.set(position, new Cell(getNames().get(position), results.get(position).toString()));
-        cells.postValue(list);
+    public void updateCell(int position, boolean isInProgress) {
+        List<Cell> cellList = cells.getValue();
+        cellList.set(position, new Cell(getNames().get(position), results.get(position).toString(), isInProgress));
+        cells.postValue(cellList);
     }
 
     public void executeBenchmarks(String operation, String thread) {
+        /*List<Cell> cellList = cells.getValue();
+        for (Cell cell : cellList) {
+            service.submit(() ->{
+
+            });
+        }*/
+
         int value = Integer.parseInt((operation));
         service = Executors.newFixedThreadPool(Integer.parseInt((thread)));
         AtomicInteger tasksCompleted = new AtomicInteger();
@@ -79,107 +86,107 @@ public class BenchmarksViewModel extends ViewModel {
 
             service.execute(() -> {
                 results.put(0, Collections.listAddInTheBeginning(new ArrayList<>(), value));
-                updateCell(0);
+                updateCell(0,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(1, Collections.listAddInTheBeginning(new LinkedList<>(), value));
-                updateCell(1);
+                updateCell(1,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(2, Collections.listAddInTheBeginning(new CopyOnWriteArrayList<>(), value));
-                updateCell(2);
+                updateCell(2,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(3, Collections.listAddInTheMiddle(new ArrayList<>(), value));
-                updateCell(3);
+                updateCell(3,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(4, Collections.listAddInTheMiddle(new LinkedList<>(), value));
-                updateCell(4);
+                updateCell(4,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(5, Collections.listAddInTheMiddle(new CopyOnWriteArrayList<>(), value));
-                updateCell(5);
+                updateCell(5,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(6, Collections.listAddInTheEnd(new ArrayList<>(), value));
-                updateCell(6);
+                updateCell(6,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(7, Collections.listAddInTheEnd(new LinkedList<>(), value));
-                updateCell(7);
+                updateCell(7,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(8, Collections.listAddInTheEnd(new CopyOnWriteArrayList<>(), value));
-                updateCell(8);
+                updateCell(8,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(9, Collections.listRemoveInTheBeginning(new ArrayList<>(), value));
-                updateCell(9);
+                updateCell(9,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(10, Collections.listRemoveInTheBeginning(new LinkedList<>(), value));
-                updateCell(10);
+                updateCell(10,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(11, Collections.listRemoveInTheBeginning(new CopyOnWriteArrayList<>(), value));
-                updateCell(11);
+                updateCell(11,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(12, Collections.listRemoveInTheMiddle(new ArrayList<>(), value));
-                updateCell(12);
+                updateCell(12,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(13, Collections.listRemoveInTheMiddle(new LinkedList<>(), value));
-                updateCell(13);
+                updateCell(13,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(14, Collections.listRemoveInTheMiddle(new CopyOnWriteArrayList<>(), value));
-                updateCell(14);
+                updateCell(14,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(15, Collections.listRemoveInTheEnd(new ArrayList<>(), value));
-                updateCell(15);
+                updateCell(15,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(16, Collections.listRemoveInTheEnd(new LinkedList<>(), value));
-                updateCell(16);
+                updateCell(16,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(17, Collections.listRemoveInTheEnd(new CopyOnWriteArrayList<>(), value));
-                updateCell(17);
+                updateCell(17,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(18, Collections.listSearchByValue(new ArrayList<>(), value));
-                updateCell(18);
+                updateCell(18,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(19, Collections.listSearchByValue(new LinkedList<>(), value));
-                updateCell(19);
+                updateCell(19,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(20, Collections.listSearchByValue(new CopyOnWriteArrayList<>(), value));
-                updateCell(20);
+                updateCell(20,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
         } else {
@@ -192,32 +199,32 @@ public class BenchmarksViewModel extends ViewModel {
             });
             service.execute(() -> {
                 results.put(0, Collections.mapAddingNew(new TreeMap<>(), value));
-                updateCell(0);
+                updateCell(0,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(1, Collections.mapAddingNew(new HashMap<>(), value));
-                updateCell(1);
+                updateCell(1,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(2, Collections.mapSearchByKey(new TreeMap<>(), value));
-                updateCell(2);
+                updateCell(2,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(3, Collections.mapSearchByKey(new HashMap<>(), value));
-                updateCell(3);
+                updateCell(3,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(4, Collections.mapRemoving(new TreeMap<>(), value));
-                updateCell(4);
+                updateCell(4,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
             service.execute(() -> {
                 results.put(5, Collections.mapRemoving(new HashMap<>(), value));
-                updateCell(5);
+                updateCell(5,false);
                 handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
             });
         }
@@ -241,34 +248,34 @@ public class BenchmarksViewModel extends ViewModel {
     public ArrayList<Integer> getNames() {
         final ArrayList<Integer> names = new ArrayList<>();
         if (type.equals(Constants.COLLECTION.toString())) {
-            names.add(R.string.arrayAddToStart);
-            names.add(R.string.linkedListAddToStart);
-            names.add(R.string.copyOnWriteAddToStart);
-            names.add(R.string.arrayAddToMiddle);
-            names.add(R.string.linkedListAddToMiddle);
-            names.add(R.string.copyOnWriteAddToMiddle);
-            names.add(R.string.arrayAddToEnd);
-            names.add(R.string.linkedListAddToEnd);
-            names.add(R.string.copyOnWriteAddToEnd);
-            names.add(R.string.arrayRemoveFromStart);
-            names.add(R.string.linkedListRemoveFromStart);
-            names.add(R.string.copyOnWriteRemoveFromStart);
-            names.add(R.string.arrayRemoveFromMiddle);
-            names.add(R.string.linkedListRemoveFromMiddle);
-            names.add(R.string.copyOnWriteRemoveFromMiddle);
-            names.add(R.string.arrayRemoveFromEnd);
-            names.add(R.string.linkedListRemoveFromEnd);
-            names.add(R.string.copyOnWriteRemoveFromEnd);
-            names.add(R.string.searchInArray);
-            names.add(R.string.searchInLinkedList);
-            names.add(R.string.searchInCopyOnWrite);
+            names.add(R.string.addToStart);
+            names.add(R.string.addToStart);
+            names.add(R.string.addToStart);
+            names.add(R.string.addToMiddle);
+            names.add(R.string.addToMiddle);
+            names.add(R.string.addToMiddle);
+            names.add(R.string.addToEnd);
+            names.add(R.string.addToEnd);
+            names.add(R.string.addToEnd);
+            names.add(R.string.removeFromStart);
+            names.add(R.string.removeFromStart);
+            names.add(R.string.removeFromStart);
+            names.add(R.string.removeFromMiddle);
+            names.add(R.string.removeFromMiddle);
+            names.add(R.string.removeFromMiddle);
+            names.add(R.string.removeFromEnd);
+            names.add(R.string.removeFromEnd);
+            names.add(R.string.removeFromEnd);
+            names.add(R.string.searchIn);
+            names.add(R.string.searchIn);
+            names.add(R.string.searchIn);
         } else {
-            names.add(R.string.treeMapAddToStart);
-            names.add(R.string.hashMapAddToStart);
-            names.add(R.string.searchInTreeMap);
-            names.add(R.string.searchInHashMap);
-            names.add(R.string.removeFromThreeMap);
-            names.add(R.string.removeFromHashMap);
+            names.add(R.string.addTo);
+            names.add(R.string.addTo);
+            names.add(R.string.searchIn);
+            names.add(R.string.searchIn);
+            names.add(R.string.removeFrom);
+            names.add(R.string.removeFrom);
         }
         return names;
     }
@@ -290,7 +297,7 @@ public class BenchmarksViewModel extends ViewModel {
             shutDown();
             return R.string.calc_stop;
         } else {
-            cells.setValue(createCells(null));
+            cells.setValue(createCells(null, true));
             setIsCalculating(true);
             executeBenchmarks(operation, thread);
             return R.string.calc_start;
@@ -306,6 +313,6 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public void onCreate() {
-        cells.setValue(createCells(EMPTY_VALUE));
+        cells.setValue(createCells(EMPTY_VALUE, false));
     }
 }

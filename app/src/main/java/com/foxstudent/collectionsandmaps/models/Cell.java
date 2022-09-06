@@ -7,10 +7,12 @@ import java.util.Objects;
 public class Cell {
     public final int name;
     public final String result;
+    public final boolean isInProgress;
 
-    public Cell(@StringRes int name, String result) {
+    public Cell(@StringRes int name, String result, boolean isInProgress) {
         this.name = name;
         this.result = result;
+        this.isInProgress = isInProgress;
     }
 
     @Override
