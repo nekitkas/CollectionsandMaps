@@ -49,15 +49,12 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
         public void bind(Cell cell) {
             operation.setText(cell.name);
             result.setText(cell.result);
-            progressBar.setVisibility(View.GONE);
 
             progressBarAnimate(cell);
         }
 
         private void progressBarAnimate(Cell cell) {
             if (cell.result == null) {
-                progressBar.setAlpha(0f);
-                progressBar.setVisibility(View.VISIBLE);
                 progressBar.animate()
                         .alpha(1f)
                         .setDuration(600);

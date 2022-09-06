@@ -41,6 +41,7 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
         String args = getArguments() == null ? DEFAULT : getArguments().getString(KEY);
         BenchmarksVMFactory factory = new BenchmarksVMFactory(args);
         model = new ViewModelProvider(getViewModelStore(), factory).get(BenchmarksViewModel.class);
+        model.onCreate();
     }
 
     @Override
@@ -54,7 +55,6 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        model.setDefaultCellValue();
         model.getCells().observe(requireActivity(), cells -> adapter.submitList(new ArrayList<>(cells)));
         model.getIsCalculating().observe(requireActivity(), isCalculating -> {
             if (isCalculating) {

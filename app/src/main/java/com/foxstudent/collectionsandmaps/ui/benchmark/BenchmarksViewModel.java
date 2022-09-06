@@ -305,7 +305,7 @@ public class BenchmarksViewModel extends ViewModel {
         }
     }
 
-    public void setDefaultCellValue() {
+    public void onCreate() {
         cells.setValue(createCells(EMPTY_VALUE));
     }
 }
