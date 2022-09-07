@@ -35,13 +35,20 @@ public class BenchmarksViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isCalculating = new MutableLiveData<>(false);
     private ExecutorService service;
 
-
     public BenchmarksViewModel(String args) {
         this.type = args;
     }
 
-    public LiveData<List<Cell>> getCells() {
-        return cells;
+    public void onCreate() {
+        cells.setValue(createCells(EMPTY_VALUE, false));
+    }
+
+    public int getSpanCount() {
+        if (type.equals(Constants.COLLECTION.toString())) {
+            return 3;
+        } else {
+            return 2;
+        }
     }
 
     public List<Cell> createCells(String result, boolean isInProgress) {
@@ -64,6 +71,76 @@ public class BenchmarksViewModel extends ViewModel {
             }
         }
         return cells;
+    }
+
+    public List<Integer> getNames() {
+        final List<Integer> names = new ArrayList<>();
+        if (type.equals(Constants.COLLECTION.toString())) {
+            names.add(R.string.arrayList);
+            names.add(R.string.linkedList);
+            names.add(R.string.copyOnWrite);
+            names.add(R.string.arrayList);
+            names.add(R.string.linkedList);
+            names.add(R.string.copyOnWrite);
+            names.add(R.string.arrayList);
+            names.add(R.string.linkedList);
+            names.add(R.string.copyOnWrite);
+            names.add(R.string.arrayList);
+            names.add(R.string.linkedList);
+            names.add(R.string.copyOnWrite);
+            names.add(R.string.arrayList);
+            names.add(R.string.linkedList);
+            names.add(R.string.copyOnWrite);
+            names.add(R.string.arrayList);
+            names.add(R.string.linkedList);
+            names.add(R.string.copyOnWrite);
+            names.add(R.string.arrayList);
+            names.add(R.string.linkedList);
+            names.add(R.string.copyOnWrite);
+        } else {
+            names.add(R.string.treeMap);
+            names.add(R.string.hashMap);
+            names.add(R.string.treeMap);
+            names.add(R.string.hashMap);
+            names.add(R.string.treeMap);
+            names.add(R.string.hashMap);
+        }
+        return names;
+    }
+
+    public List<Integer> getOperations() {
+        final List<Integer> operations = new ArrayList<>();
+        if (type.equals(Constants.COLLECTION.toString())) {
+            operations.add(R.string.addToStart);
+            operations.add(R.string.addToStart);
+            operations.add(R.string.addToStart);
+            operations.add(R.string.addToMiddle);
+            operations.add(R.string.addToMiddle);
+            operations.add(R.string.addToMiddle);
+            operations.add(R.string.addToEnd);
+            operations.add(R.string.addToEnd);
+            operations.add(R.string.addToEnd);
+            operations.add(R.string.removeFromStart);
+            operations.add(R.string.removeFromStart);
+            operations.add(R.string.removeFromStart);
+            operations.add(R.string.removeFromMiddle);
+            operations.add(R.string.removeFromMiddle);
+            operations.add(R.string.removeFromMiddle);
+            operations.add(R.string.removeFromEnd);
+            operations.add(R.string.removeFromEnd);
+            operations.add(R.string.removeFromEnd);
+            operations.add(R.string.searchIn);
+            operations.add(R.string.searchIn);
+            operations.add(R.string.searchIn);
+        } else {
+            operations.add(R.string.addTo);
+            operations.add(R.string.addTo);
+            operations.add(R.string.searchIn);
+            operations.add(R.string.searchIn);
+            operations.add(R.string.removeFrom);
+            operations.add(R.string.removeFrom);
+        }
+        return operations;
     }
 
     public void updateCell(int position, boolean isInProgress) {
@@ -207,84 +284,6 @@ public class BenchmarksViewModel extends ViewModel {
         }
     }
 
-    public List<Integer> getNames() {
-        final List<Integer> names = new ArrayList<>();
-        if (type.equals(Constants.COLLECTION.toString())) {
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-        } else {
-            names.add(R.string.treeMap);
-            names.add(R.string.hashMap);
-            names.add(R.string.treeMap);
-            names.add(R.string.hashMap);
-            names.add(R.string.treeMap);
-            names.add(R.string.hashMap);
-        }
-        return names;
-    }
-
-    public List<Integer> getOperations() {
-        final List<Integer> operations = new ArrayList<>();
-        if (type.equals(Constants.COLLECTION.toString())) {
-            operations.add(R.string.addToStart);
-            operations.add(R.string.addToStart);
-            operations.add(R.string.addToStart);
-            operations.add(R.string.addToMiddle);
-            operations.add(R.string.addToMiddle);
-            operations.add(R.string.addToMiddle);
-            operations.add(R.string.addToEnd);
-            operations.add(R.string.addToEnd);
-            operations.add(R.string.addToEnd);
-            operations.add(R.string.removeFromStart);
-            operations.add(R.string.removeFromStart);
-            operations.add(R.string.removeFromStart);
-            operations.add(R.string.removeFromMiddle);
-            operations.add(R.string.removeFromMiddle);
-            operations.add(R.string.removeFromMiddle);
-            operations.add(R.string.removeFromEnd);
-            operations.add(R.string.removeFromEnd);
-            operations.add(R.string.removeFromEnd);
-            operations.add(R.string.searchIn);
-            operations.add(R.string.searchIn);
-            operations.add(R.string.searchIn);
-        } else {
-            operations.add(R.string.addTo);
-            operations.add(R.string.addTo);
-            operations.add(R.string.searchIn);
-            operations.add(R.string.searchIn);
-            operations.add(R.string.removeFrom);
-            operations.add(R.string.removeFrom);
-        }
-        return operations;
-    }
-
-    public LiveData<Boolean> getIsCalculating() {
-        return isCalculating;
-    }
-
-    public void setIsCalculating(boolean calculating) {
-        isCalculating.setValue(calculating);
-    }
-
     @StringRes
     public int run(String operation, String thread) {
         if (operation.isEmpty() && thread.isEmpty()) {
@@ -301,15 +300,15 @@ public class BenchmarksViewModel extends ViewModel {
         }
     }
 
-    public int getSpanCount() {
-        if (type.equals(Constants.COLLECTION.toString())) {
-            return 3;
-        } else {
-            return 2;
-        }
+    public LiveData<Boolean> getIsCalculating() {
+        return isCalculating;
     }
 
-    public void onCreate() {
-        cells.setValue(createCells(EMPTY_VALUE, false));
+    public void setIsCalculating(boolean calculating) {
+        isCalculating.setValue(calculating);
+    }
+
+    public LiveData<List<Cell>> getCells() {
+        return cells;
     }
 }
