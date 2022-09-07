@@ -8,10 +8,12 @@ public class Cell {
     public final int name;
     public final String result;
     public final boolean isInProgress;
+    public final int operation;
 
-    public Cell(@StringRes int name, String result, boolean isInProgress) {
+    public Cell(@StringRes int name, String result,@StringRes int operation, boolean isInProgress) {
         this.name = name;
         this.result = result;
+        this.operation = operation;
         this.isInProgress = isInProgress;
     }
 
