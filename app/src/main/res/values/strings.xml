@@ -26,9 +26,11 @@
     <string name="addTo">Add to</string>
     <string name="removeFrom">Remove from</string>
 
-    <string name="arrayList">ArrayList:</string>
-    <string name="linkedList">LinkedList:</string>
-    <string name="copyOnWrite">CopyOnWrite:</string>
-    <string name="treeMap">TreeMap:</string>
-    <string name="hashMap">HashMap:</string>
+    <string name="arrayList">ArrayList</string>
+    <string name="linkedList">LinkedList</string>
+    <string name="copyOnWrite">CopyOnWrite</string>
+    <string name="treeMap">TreeMap</string>
+    <string name="hashMap">HashMap</string>
+
+    <string name="title">%1$s %2$s</string>
 </resources>

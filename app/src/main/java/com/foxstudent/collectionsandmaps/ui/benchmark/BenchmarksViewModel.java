@@ -89,6 +89,12 @@ public class BenchmarksViewModel extends ViewModel {
                         return Collections.listAddInTheEnd(new ArrayList<>(), operations);
                     case R.string.searchIn:
                         return Collections.listSearchByValue(new ArrayList<>(), operations);
+                    case R.string.removeFromStart:
+                        return Collections.listRemoveInTheBeginning(new ArrayList<>(), operations);
+                    case R.string.removeFromMiddle:
+                        return Collections.listRemoveInTheMiddle(new ArrayList<>(), operations);
+                    case R.string.removeFromEnd:
+                        return Collections.listRemoveInTheEnd(new ArrayList<>(), operations);
                 }
             case R.string.linkedList:
                 switch (cell.operation) {
@@ -100,6 +106,12 @@ public class BenchmarksViewModel extends ViewModel {
                         return Collections.listAddInTheEnd(new LinkedList<>(), operations);
                     case R.string.searchIn:
                         return Collections.listSearchByValue(new LinkedList<>(), operations);
+                    case R.string.removeFromStart:
+                        return Collections.listRemoveInTheBeginning(new LinkedList<>(), operations);
+                    case R.string.removeFromMiddle:
+                        return Collections.listRemoveInTheMiddle(new LinkedList<>(), operations);
+                    case R.string.removeFromEnd:
+                        return Collections.listRemoveInTheEnd(new LinkedList<>(), operations);
                 }
             case R.string.copyOnWrite:
                 switch (cell.operation) {
@@ -111,6 +123,12 @@ public class BenchmarksViewModel extends ViewModel {
                         return Collections.listAddInTheEnd(new CopyOnWriteArrayList<>(), operations);
                     case R.string.searchIn:
                         return Collections.listSearchByValue(new CopyOnWriteArrayList<>(), operations);
+                    case R.string.removeFromStart:
+                        return Collections.listRemoveInTheBeginning(new CopyOnWriteArrayList<>(), operations);
+                    case R.string.removeFromMiddle:
+                        return Collections.listRemoveInTheMiddle(new CopyOnWriteArrayList<>(), operations);
+                    case R.string.removeFromEnd:
+                        return Collections.listRemoveInTheEnd(new CopyOnWriteArrayList<>(), operations);
                 }
             case R.string.treeMap:
                 switch (cell.operation) {
@@ -136,10 +154,11 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public void executeBenchmarks(String operation, String thread) {
-        int value = Integer.parseInt((operation));
-        int tasks = type.equals(Constants.COLLECTION.toString()) ? 20 : 5;
-        service = Executors.newFixedThreadPool(Integer.parseInt((thread)));
-        AtomicInteger tasksCompleted = new AtomicInteger();
+        if (inputIsNumeric(operation) && inputIsNumeric(thread)) {
+            int operationInput = Integer.parseInt(operation);
+            int tasks = type.equals(Constants.COLLECTION.toString()) ? 20 : 5;
+            service = Executors.newFixedThreadPool(Integer.parseInt(thread));
+            AtomicInteger tasksCompleted = new AtomicInteger();
 
             Handler handler = new Handler(message -> {
                 if (message.what == tasks) {
@@ -148,15 +167,29 @@ public class BenchmarksViewModel extends ViewModel {
                 }
                 return true;
             });
-        List<Cell> cellList = cells.getValue();
-        for (int i = 0; i < cellList.size(); i++) {
-            int finalI = i;
-            service.submit(() -> {
-                results.put(finalI ,measureTime(cellList.get(finalI), value));
-                updateCell(finalI, false);
-                handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
-            });
+            List<Cell> cellList = cells.getValue();
+            for (int i = 0; i < cellList.size(); i++) {
+                int position = i;
+                service.submit(() -> {
+                    results.put(position, measureTime(cellList.get(position), operationInput));
+                    updateCell(position, false);
+                    handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
+                });
+            }
+
         }
+    }
+
+    public boolean inputIsNumeric(String input) {
+        if (input == null) {
+            return false;
+        }
+        try {
+            Integer.parseInt(input);
+        } catch (NumberFormatException exception) {
+            return false;
+        }
+        return true;
     }
 
     public void shutDown() {

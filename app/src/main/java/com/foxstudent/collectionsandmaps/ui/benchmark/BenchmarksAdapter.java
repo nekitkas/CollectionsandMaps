@@ -1,5 +1,6 @@
 package com.foxstudent.collectionsandmaps.ui.benchmark;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,10 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
         }
 
         public void bind(Cell cell) {
-            operation.setText(cell.name);
+            String placeHolderName = operation.getContext().getString(cell.name);
+            String placeHolderOperation = operation.getContext().getString(cell.operation);
+            String title = operation.getContext().getString(R.string.title, placeHolderOperation, placeHolderName);
+            operation.setText(title);
             result.setText(cell.result);
 
             progressBarAnimate(cell);
@@ -55,7 +59,7 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
 
         private void progressBarAnimate(Cell cell) {
             float expected = cell.isInProgress ? 1f : 0f;
-            if(progressBar.getAlpha() == expected) {
+            if (progressBar.getAlpha() == expected) {
                 return;
             }
             progressBar.animate()
