@@ -25,11 +25,17 @@ public class Cell {
             return false;
         }
         Cell cell = (Cell) o;
-        return Objects.equals(name, cell.name) && Objects.equals(result, cell.result);
+        return Objects.equals(name, cell.name) &&
+                Objects.equals(result, cell.result) &&
+                Objects.equals(operation, cell.operation) &&
+                Objects.equals(isInProgress, cell.isInProgress);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name) +
+                Objects.hash(result) +
+                Objects.hash(operation) +
+                Objects.hash(isInProgress);
     }
 }

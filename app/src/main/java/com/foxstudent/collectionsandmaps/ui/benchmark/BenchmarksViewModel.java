@@ -19,18 +19,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BenchmarksViewModel extends ViewModel {
 
     private final static String EMPTY_VALUE = "N/A";
     private final String type;
-    private final ConcurrentHashMap<Integer, Float> results = new ConcurrentHashMap<>();
     private final MutableLiveData<List<Cell>> cells = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isCalculating = new MutableLiveData<>(false);
     private ExecutorService service;
@@ -53,21 +50,20 @@ public class BenchmarksViewModel extends ViewModel {
 
     public List<Cell> createCells(String result, boolean isInProgress) {
         final List<Cell> cells = new ArrayList<>();
-        if (type.equals(Constants.COLLECTION.toString())) {
-            for (int i = 0; i < 21; i++) {
-                cells.add(new Cell(
-                        getNames().get(i),
-                        result,
-                        getOperations().get(i),
-                        isInProgress));
-            }
-        } else {
-            for (int i = 0; i < 6; i++) {
-                cells.add(new Cell(
-                        getNames().get(i),
-                        result,
-                        getOperations().get(i),
-                        isInProgress));
+        final int listSize = type.equals(Constants.COLLECTION.toString()) ? 21 : 6;
+        int nameIndex = 0;
+        int operationIndex = 0;
+
+        for (int i = 0; i < listSize; i++) {
+            cells.add(new Cell(
+                    getNames().get(nameIndex),
+                    result,
+                    getOperations().get(operationIndex),
+                    isInProgress));
+            nameIndex++;
+            if (nameIndex == listSize / getOperations().size()) {
+                nameIndex = 0;
+                operationIndex++;
             }
         }
         return cells;
@@ -79,29 +75,7 @@ public class BenchmarksViewModel extends ViewModel {
             names.add(R.string.arrayList);
             names.add(R.string.linkedList);
             names.add(R.string.copyOnWrite);
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
         } else {
-            names.add(R.string.treeMap);
-            names.add(R.string.hashMap);
-            names.add(R.string.treeMap);
-            names.add(R.string.hashMap);
             names.add(R.string.treeMap);
             names.add(R.string.hashMap);
         }
@@ -112,43 +86,26 @@ public class BenchmarksViewModel extends ViewModel {
         final List<Integer> operations = new ArrayList<>();
         if (type.equals(Constants.COLLECTION.toString())) {
             operations.add(R.string.addToStart);
-            operations.add(R.string.addToStart);
-            operations.add(R.string.addToStart);
-            operations.add(R.string.addToMiddle);
-            operations.add(R.string.addToMiddle);
             operations.add(R.string.addToMiddle);
             operations.add(R.string.addToEnd);
-            operations.add(R.string.addToEnd);
-            operations.add(R.string.addToEnd);
-            operations.add(R.string.removeFromStart);
-            operations.add(R.string.removeFromStart);
             operations.add(R.string.removeFromStart);
             operations.add(R.string.removeFromMiddle);
-            operations.add(R.string.removeFromMiddle);
-            operations.add(R.string.removeFromMiddle);
             operations.add(R.string.removeFromEnd);
-            operations.add(R.string.removeFromEnd);
-            operations.add(R.string.removeFromEnd);
-            operations.add(R.string.searchIn);
-            operations.add(R.string.searchIn);
             operations.add(R.string.searchIn);
         } else {
             operations.add(R.string.addTo);
-            operations.add(R.string.addTo);
             operations.add(R.string.searchIn);
-            operations.add(R.string.searchIn);
-            operations.add(R.string.removeFrom);
             operations.add(R.string.removeFrom);
         }
         return operations;
     }
 
-    public void updateCell(int position, boolean isInProgress) {
-        List<Cell> cellList = cells.getValue();
+    public void updateCell(int position, float result, boolean isInProgress) {
+        final List<Cell> cellList = cells.getValue();
         cellList.set(position, new Cell(
-                getNames().get(position),
-                results.get(position).toString(),
-                getOperations().get(position),
+                cellList.get(position).name,
+                Float.toString(result),
+                cellList.get(position).operation,
                 isInProgress));
         cells.postValue(cellList);
     }
@@ -230,14 +187,14 @@ public class BenchmarksViewModel extends ViewModel {
         }
     }
 
-    public void executeBenchmarks(String operation, String thread) {
-        if (inputIsNumeric(operation) && inputIsNumeric(thread)) {
+    public void executeBenchmarks(String operation, String threadPool) {
+        if (inputIsNumeric(operation) && inputIsNumeric(threadPool)) {
             int operationInput = Integer.parseInt(operation);
             int tasks = type.equals(Constants.COLLECTION.toString()) ? 20 : 5;
-            service = Executors.newFixedThreadPool(Integer.parseInt(thread));
+            service = Executors.newFixedThreadPool(Integer.parseInt(threadPool));
             AtomicInteger tasksCompleted = new AtomicInteger();
 
-            Handler handler = new Handler(message -> {
+            final Handler handler = new Handler(message -> {
                 if (message.what == tasks) {
                     setIsCalculating(false);
                     shutDown();
@@ -246,23 +203,21 @@ public class BenchmarksViewModel extends ViewModel {
             });
             List<Cell> cellList = cells.getValue();
             for (int i = 0; i < cellList.size(); i++) {
-                int position = i;
+                final int position = i;
                 service.submit(() -> {
-                    results.put(position, measureTime(cellList.get(position), operationInput));
-                    updateCell(position, false);
+                    updateCell(position, measureTime(cellList.get(position), operationInput), false);
                     handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
                 });
             }
-
         }
     }
 
-    public boolean inputIsNumeric(String input) {
+    private boolean inputIsNumeric(String input) {
         if (input == null) {
             return false;
         }
         try {
-            Integer.parseInt(input);
+             Integer.parseInt(input);
         } catch (NumberFormatException exception) {
             return false;
         }
@@ -270,18 +225,7 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public void shutDown() {
-        service.shutdown();
-        try {
-            if (!service.awaitTermination(1, TimeUnit.SECONDS)) {
-                service.shutdownNow();
-                if (!service.awaitTermination(1, TimeUnit.SECONDS)) {
-                    System.err.println(R.string.service_fail);
-                }
-            }
-        } catch (InterruptedException ie) {
-            service.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
+        service.shutdownNow();
     }
 
     @StringRes

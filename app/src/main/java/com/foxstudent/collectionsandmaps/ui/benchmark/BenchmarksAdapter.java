@@ -1,6 +1,5 @@
 package com.foxstudent.collectionsandmaps.ui.benchmark;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +65,6 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
                     .alpha(expected)
                     .setDuration(600);
         }
-
     }
 
 
