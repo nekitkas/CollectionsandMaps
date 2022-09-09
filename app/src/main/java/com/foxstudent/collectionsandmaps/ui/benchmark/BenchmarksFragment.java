@@ -75,7 +75,7 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         String operationInput = binding.etOperations.getText().toString().trim();
         String threadInput = binding.etThreads.getText().toString().trim();
-        Toast.makeText(requireActivity(), model.run(operationInput, threadInput), Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireActivity(), model.onButtonPressed(operationInput, threadInput), Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -100,11 +100,11 @@ public class BenchmarksViewModel extends ViewModel {
         return operations;
     }
 
-    public void updateCell(int position, float result, boolean isInProgress) {
+    public void updateCell(int position, String result, boolean isInProgress) {
         final List<Cell> cellList = cells.getValue();
         cellList.set(position, new Cell(
                 cellList.get(position).name,
-                Float.toString(result),
+                result,
                 cellList.get(position).operation,
                 isInProgress));
         cells.postValue(cellList);
@@ -189,6 +189,7 @@ public class BenchmarksViewModel extends ViewModel {
 
     public void executeBenchmarks(String operation, String threadPool) {
         if (inputIsNumeric(operation) && inputIsNumeric(threadPool)) {
+            setIsCalculating(true);
             int operationInput = Integer.parseInt(operation);
             int tasks = type.equals(Constants.COLLECTION.toString()) ? 20 : 5;
             service = Executors.newFixedThreadPool(Integer.parseInt(threadPool));
@@ -196,7 +197,6 @@ public class BenchmarksViewModel extends ViewModel {
 
             final Handler handler = new Handler(message -> {
                 if (message.what == tasks) {
-                    setIsCalculating(false);
                     shutDown();
                 }
                 return true;
@@ -205,7 +205,7 @@ public class BenchmarksViewModel extends ViewModel {
             for (int i = 0; i < cellList.size(); i++) {
                 final int position = i;
                 service.submit(() -> {
-                    updateCell(position, measureTime(cellList.get(position), operationInput), false);
+                    updateCell(position, Float.toString(measureTime(cellList.get(position), operationInput)), false);
                     handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
                 });
             }
@@ -217,29 +217,40 @@ public class BenchmarksViewModel extends ViewModel {
             return false;
         }
         try {
-             Integer.parseInt(input);
+            Integer.parseInt(input);
         } catch (NumberFormatException exception) {
             return false;
         }
         return true;
     }
 
+    public void hideProgressBar(){
+        final List<Cell> cellList = cells.getValue();
+        for (int i = 0; i < cellList.size(); i++) {
+            String result = cellList.get(i).result;
+            if(result == null){
+                result = EMPTY_VALUE;
+            }
+            updateCell(i,result,false);
+        }
+    }
+
     public void shutDown() {
+        setIsCalculating(false);
         service.shutdownNow();
     }
 
     @StringRes
-    public int run(String operation, String thread) {
+    public int onButtonPressed(String operation, String thread) {
         if (operation.isEmpty() && thread.isEmpty()) {
             return R.string.empty_field;
         } else if (isCalculating.getValue()) {
-            setIsCalculating(false);
             shutDown();
+            hideProgressBar();
             return R.string.calc_stop;
         } else {
-            cells.setValue(createCells(null, true));
-            setIsCalculating(true);
             executeBenchmarks(operation, thread);
+            cells.setValue(createCells(null, true));
             return R.string.calc_start;
         }
     }
