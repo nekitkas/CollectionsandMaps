@@ -33,4 +33,8 @@
     <string name="hashMap">HashMap</string>
 
     <string name="title">%1$s %2$s</string>
+    <string name="must_be_numeric">Input must be a number!</string>
+    <string name="must_be_more_than_zero">Input must be more than zero</string>
+    <string name="must_be_positive">Input must be a positive number</string>
+    <string name="inputIsValidated">input is validated</string>
 </resources>

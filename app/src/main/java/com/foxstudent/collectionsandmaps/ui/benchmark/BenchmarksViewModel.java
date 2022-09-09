@@ -20,9 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class BenchmarksViewModel extends ViewModel {
 
@@ -30,7 +29,7 @@ public class BenchmarksViewModel extends ViewModel {
     private final String type;
     private final MutableLiveData<List<Cell>> cells = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isCalculating = new MutableLiveData<>(false);
-    private ExecutorService service;
+    private ThreadPoolExecutor service;
 
     public BenchmarksViewModel(String args) {
         this.type = args;
@@ -50,18 +49,20 @@ public class BenchmarksViewModel extends ViewModel {
 
     public List<Cell> createCells(String result, boolean isInProgress) {
         final List<Cell> cells = new ArrayList<>();
+        final List<Integer> names = getNames();
+        final List<Integer> operations = getOperations();
         final int listSize = type.equals(Constants.COLLECTION.toString()) ? 21 : 6;
         int nameIndex = 0;
         int operationIndex = 0;
 
         for (int i = 0; i < listSize; i++) {
             cells.add(new Cell(
-                    getNames().get(nameIndex),
+                    names.get(nameIndex),
                     result,
-                    getOperations().get(operationIndex),
+                    operations.get(operationIndex),
                     isInProgress));
             nameIndex++;
-            if (nameIndex == listSize / getOperations().size()) {
+            if (nameIndex == listSize / operations.size()) {
                 nameIndex = 0;
                 operationIndex++;
             }
@@ -188,27 +189,19 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public void executeBenchmarks(String operation, String threadPool) {
-        if (inputIsNumeric(operation) && inputIsNumeric(threadPool)) {
-            setIsCalculating(true);
-            int operationInput = Integer.parseInt(operation);
-            int tasks = type.equals(Constants.COLLECTION.toString()) ? 20 : 5;
-            service = Executors.newFixedThreadPool(Integer.parseInt(threadPool));
-            AtomicInteger tasksCompleted = new AtomicInteger();
+        setIsCalculating(true);
+        service = (ThreadPoolExecutor) Executors.newFixedThreadPool(Integer.parseInt(threadPool));
+        final Handler handler = new Handler();
 
-            final Handler handler = new Handler(message -> {
-                if (message.what == tasks) {
-                    shutDown();
+        List<Cell> cellList = cells.getValue();
+        for (int i = 0; i < cellList.size(); i++) {
+            final int position = i;
+            service.submit(() -> {
+                updateCell(position, Float.toString(measureTime(cellList.get(position), Integer.parseInt(operation))), false);
+                if (service.getCompletedTaskCount() == cellList.size() - 1) {
+                    handler.post(this::shutDown);
                 }
-                return true;
             });
-            List<Cell> cellList = cells.getValue();
-            for (int i = 0; i < cellList.size(); i++) {
-                final int position = i;
-                service.submit(() -> {
-                    updateCell(position, Float.toString(measureTime(cellList.get(position), operationInput)), false);
-                    handler.sendEmptyMessage(tasksCompleted.getAndIncrement());
-                });
-            }
         }
     }
 
@@ -224,14 +217,14 @@ public class BenchmarksViewModel extends ViewModel {
         return true;
     }
 
-    public void hideProgressBar(){
+    public void hideProgressBar() {
         final List<Cell> cellList = cells.getValue();
         for (int i = 0; i < cellList.size(); i++) {
             String result = cellList.get(i).result;
-            if(result == null){
+            if (result == null) {
                 result = EMPTY_VALUE;
             }
-            updateCell(i,result,false);
+            updateCell(i, result, false);
         }
     }
 
@@ -241,18 +234,34 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     @StringRes
-    public int onButtonPressed(String operation, String thread) {
-        if (operation.isEmpty() && thread.isEmpty()) {
+    private int validateInputs(String operation, String threadPool) {
+        if (operation.isEmpty() && threadPool.isEmpty()) {
             return R.string.empty_field;
-        } else if (isCalculating.getValue()) {
-            shutDown();
-            hideProgressBar();
-            return R.string.calc_stop;
-        } else {
-            executeBenchmarks(operation, thread);
-            cells.setValue(createCells(null, true));
-            return R.string.calc_start;
+        } else if (!inputIsNumeric(operation) && !inputIsNumeric(threadPool)) {
+            return R.string.must_be_numeric;
+        } else if (Integer.parseInt(operation) == 0 && Integer.parseInt(threadPool) == 0) {
+            return R.string.must_be_more_than_zero;
+        } else if (Integer.parseInt(operation) < 0 && Integer.parseInt(threadPool) < 0) {
+            return R.string.must_be_positive;
         }
+        return R.string.inputIsValidated;
+    }
+
+    @StringRes
+    public int onButtonPressed(String operation, String threadPool) {
+        int message = validateInputs(operation, threadPool);
+        if (message == R.string.inputIsValidated) {
+            if (service != null && service.getActiveCount() > 0) {
+                shutDown();
+                hideProgressBar();
+                return R.string.calc_stop;
+            } else {
+                executeBenchmarks(operation, threadPool);
+                cells.setValue(createCells(null, true));
+                return R.string.calc_start;
+            }
+        }
+        return message;
     }
 
     public LiveData<Boolean> getIsCalculating() {
