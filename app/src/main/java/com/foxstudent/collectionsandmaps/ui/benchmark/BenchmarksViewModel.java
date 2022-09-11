@@ -3,6 +3,7 @@ package com.foxstudent.collectionsandmaps.ui.benchmark;
 
 import android.annotation.SuppressLint;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.annotation.StringRes;
 import androidx.lifecycle.LiveData;
@@ -51,20 +52,15 @@ public class BenchmarksViewModel extends ViewModel {
         final List<Cell> cells = new ArrayList<>();
         final List<Integer> names = getNames();
         final List<Integer> operations = getOperations();
-        final int listSize = type.equals(Constants.COLLECTION.toString()) ? 21 : 6;
-        int nameIndex = 0;
-        int operationIndex = 0;
 
-        for (int i = 0; i < listSize; i++) {
-            cells.add(new Cell(
-                    names.get(nameIndex),
-                    result,
-                    operations.get(operationIndex),
-                    isInProgress));
-            nameIndex++;
-            if (nameIndex == listSize / operations.size()) {
-                nameIndex = 0;
-                operationIndex++;
+        for (int operation : operations) {
+            for (int name : names) {
+                cells.add(new Cell(
+                        name,
+                        result,
+                        operation,
+                        isInProgress
+                ));
             }
         }
         return cells;
@@ -235,13 +231,13 @@ public class BenchmarksViewModel extends ViewModel {
 
     @StringRes
     private int validateInputs(String operation, String threadPool) {
-        if (operation.isEmpty() && threadPool.isEmpty()) {
+        if (operation.isEmpty() || threadPool.isEmpty()) {
             return R.string.empty_field;
-        } else if (!inputIsNumeric(operation) && !inputIsNumeric(threadPool)) {
+        } else if (!inputIsNumeric(operation) || !inputIsNumeric(threadPool)) {
             return R.string.must_be_numeric;
-        } else if (Integer.parseInt(operation) == 0 && Integer.parseInt(threadPool) == 0) {
+        } else if (Integer.parseInt(operation) == 0 || Integer.parseInt(threadPool) == 0) {
             return R.string.must_be_more_than_zero;
-        } else if (Integer.parseInt(operation) < 0 && Integer.parseInt(threadPool) < 0) {
+        } else if (Integer.parseInt(operation) < 0 || Integer.parseInt(threadPool) < 0) {
             return R.string.must_be_positive;
         }
         return R.string.inputIsValidated;
