@@ -193,7 +193,7 @@ public class BenchmarksViewModel extends ViewModel {
         for (int i = 0; i < cellList.size(); i++) {
             final int position = i;
             service.submit(() -> {
-                updateCell(position, Float.toString(measureTime(cellList.get(position), Integer.parseInt(operation))), false);
+                updateCell(position, String.valueOf(measureTime(cellList.get(position), Integer.parseInt(operation))), false);
                 if (service.getCompletedTaskCount() == cellList.size() - 1) {
                     handler.post(this::shutDown);
                 }
