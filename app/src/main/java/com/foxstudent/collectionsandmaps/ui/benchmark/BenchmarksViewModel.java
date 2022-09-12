@@ -27,7 +27,6 @@ public class BenchmarksViewModel extends ViewModel {
     private final static String EMPTY_VALUE = "N/A";
     private final String type;
     private final MutableLiveData<List<Cell>> cells = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isCalculating = new MutableLiveData<>(false);
     private final MutableLiveData<Integer> toastMessage = new MutableLiveData<>();
     private ThreadPoolExecutor service;
 
@@ -185,18 +184,16 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public void executeBenchmarks(String operation, String threadPool) {
-        setIsCalculating(true);
         service = (ThreadPoolExecutor) Executors.newFixedThreadPool(Integer.parseInt(threadPool));
         final Handler handler = new Handler();
 
-        List<Cell> cellList = cells.getValue();
+        final List<Cell> cellList = cells.getValue();
         for (Cell cell : cellList) {
             service.submit(() -> {
                 updateCell(cellList.indexOf(cell), String.valueOf(measureTime(cell, Integer.parseInt(operation))), false);
                 if (service.getCompletedTaskCount() == cellList.size() - 1) {
                     handler.post(() -> {
                         service.shutdown();
-                        setIsCalculating(false);
                         setToastMessage(R.string.calc_complete);
                     });
                 }
@@ -228,10 +225,9 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public void shutDown() {
-        setIsCalculating(false);
         service.shutdownNow();
         setToastMessage(R.string.calc_stopping);
-        Thread thread = new Thread(() -> {
+        final Thread awaitTermination = new Thread(() -> {
             while (true){
                 if(service.isTerminated()){
                     hideProgressBar();
@@ -240,7 +236,7 @@ public class BenchmarksViewModel extends ViewModel {
                 }
             }
         });
-        thread.start();
+        awaitTermination.start();
     }
 
     private boolean validateInputs(String operation, String threadPool) {
@@ -265,14 +261,6 @@ public class BenchmarksViewModel extends ViewModel {
             cells.setValue(createCells(null, true));
             setToastMessage(R.string.calc_start);
         }
-    }
-
-    public LiveData<Boolean> getIsCalculating() {
-        return isCalculating;
-    }
-
-    public void setIsCalculating(boolean calculating) {
-        isCalculating.setValue(calculating);
     }
 
     public LiveData<List<Cell>> getCells() {

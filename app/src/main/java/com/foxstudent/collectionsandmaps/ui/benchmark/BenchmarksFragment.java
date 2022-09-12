@@ -59,13 +59,10 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
         model.getToastMessage().observe(requireActivity(), message -> {
             if(message != 0){
                 Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
-            }
-        });
-        model.getIsCalculating().observe(requireActivity(), isCalculating -> {
-            if (isCalculating) {
-                binding.button.setText(R.string.stop);
-            } else {
-                binding.button.setText(R.string.start);
+                if(message == R.string.calc_start)
+                    binding.button.setText(R.string.stop);
+                if(message == R.string.calc_stop)
+                    binding.button.setText(R.string.start);
             }
         });
 
