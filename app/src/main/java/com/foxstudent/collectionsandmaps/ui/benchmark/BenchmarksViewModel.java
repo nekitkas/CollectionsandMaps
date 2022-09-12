@@ -3,7 +3,6 @@ package com.foxstudent.collectionsandmaps.ui.benchmark;
 
 import android.annotation.SuppressLint;
 import android.os.Handler;
-import android.util.Log;
 
 import androidx.annotation.StringRes;
 import androidx.lifecycle.LiveData;
@@ -190,10 +189,9 @@ public class BenchmarksViewModel extends ViewModel {
         final Handler handler = new Handler();
 
         List<Cell> cellList = cells.getValue();
-        for (int i = 0; i < cellList.size(); i++) {
-            final int position = i;
+        for (Cell cell : cellList) {
             service.submit(() -> {
-                updateCell(position, String.valueOf(measureTime(cellList.get(position), Integer.parseInt(operation))), false);
+                updateCell(cellList.indexOf(cell), String.valueOf(measureTime(cell, Integer.parseInt(operation))), false);
                 if (service.getCompletedTaskCount() == cellList.size() - 1) {
                     handler.post(this::shutDown);
                 }
