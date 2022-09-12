@@ -8,12 +8,12 @@
     <string name="threads">Threads</string>
     <string name="stop">Stop</string>
     <string name="start">Start</string>
+    <string name="wait">Wait</string>
     <string name="empty_field">Empty field</string>
     <string name="calc_start">Calculation started</string>
     <string name="calc_stop">Calculation stopped</string>
     <string name="calc_stopping">Stopping calculations…</string>
     <string name="calc_complete">Calculation completed</string>
-    <string name="service_fail">Pool did not terminate</string>
 
     <string name="addToStart">Adding to start</string>
     <string name="addToMiddle">Adding to middle</string>
@@ -36,5 +36,4 @@
     <string name="must_be_numeric">Input must be a number!</string>
     <string name="must_be_more_than_zero">Input must be more than zero</string>
     <string name="must_be_positive">Input must be a positive number</string>
-    <string name="inputIsValidated">input is validated</string>
 </resources>

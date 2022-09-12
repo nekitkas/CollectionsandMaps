@@ -61,8 +61,18 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
                 Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
                 if(message == R.string.calc_start)
                     binding.button.setText(R.string.stop);
-                if(message == R.string.calc_stop)
+                if(message == R.string.calc_stop){
                     binding.button.setText(R.string.start);
+                    binding.button.setClickable(true);
+                }
+                if(message == R.string.calc_complete){
+                    binding.button.setText(R.string.start);
+                    binding.button.setClickable(true);
+                }
+                if(message == R.string.calc_stopping){
+                    binding.button.setText(R.string.wait);
+                    binding.button.setClickable(false);
+                }
             }
         });
 
