@@ -233,9 +233,7 @@ public class BenchmarksViewModel extends ViewModel {
             return R.string.empty_field;
         } else if (!inputIsNumeric(operation) || !inputIsNumeric(threadPool)) {
             return R.string.must_be_numeric;
-        } else if (Integer.parseInt(operation) == 0 || Integer.parseInt(threadPool) == 0) {
-            return R.string.must_be_more_than_zero;
-        } else if (Integer.parseInt(operation) < 0 || Integer.parseInt(threadPool) < 0) {
+        } else if (Integer.parseInt(operation) <= 0 || Integer.parseInt(threadPool) <= 0) {
             return R.string.must_be_positive;
         }
         return R.string.inputIsValidated;
