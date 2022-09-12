@@ -4,7 +4,6 @@ package com.foxstudent.collectionsandmaps.ui.benchmark;
 import android.annotation.SuppressLint;
 import android.os.Handler;
 
-import androidx.annotation.StringRes;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -29,6 +28,7 @@ public class BenchmarksViewModel extends ViewModel {
     private final String type;
     private final MutableLiveData<List<Cell>> cells = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isCalculating = new MutableLiveData<>(false);
+    private final MutableLiveData<Integer> toastMessage = new MutableLiveData<>();
     private ThreadPoolExecutor service;
 
     public BenchmarksViewModel(String args) {
@@ -37,6 +37,7 @@ public class BenchmarksViewModel extends ViewModel {
 
     public void onCreate() {
         cells.setValue(createCells(EMPTY_VALUE, false));
+        setToastMessage(0);
     }
 
     public int getSpanCount() {
@@ -193,7 +194,11 @@ public class BenchmarksViewModel extends ViewModel {
             service.submit(() -> {
                 updateCell(cellList.indexOf(cell), String.valueOf(measureTime(cell, Integer.parseInt(operation))), false);
                 if (service.getCompletedTaskCount() == cellList.size() - 1) {
-                    handler.post(this::shutDown);
+                    handler.post(() -> {
+                        service.shutdown();
+                        setIsCalculating(false);
+                        setToastMessage(R.string.calc_complete);
+                    });
                 }
             });
         }
@@ -225,35 +230,41 @@ public class BenchmarksViewModel extends ViewModel {
     public void shutDown() {
         setIsCalculating(false);
         service.shutdownNow();
-    }
-
-    @StringRes
-    private int validateInputs(String operation, String threadPool) {
-        if (operation.isEmpty() || threadPool.isEmpty()) {
-            return R.string.empty_field;
-        } else if (!inputIsNumeric(operation) || !inputIsNumeric(threadPool)) {
-            return R.string.must_be_numeric;
-        } else if (Integer.parseInt(operation) <= 0 || Integer.parseInt(threadPool) <= 0) {
-            return R.string.must_be_positive;
-        }
-        return R.string.inputIsValidated;
-    }
-
-    @StringRes
-    public int onButtonPressed(String operation, String threadPool) {
-        int message = validateInputs(operation, threadPool);
-        if (message == R.string.inputIsValidated) {
-            if (service != null && service.getActiveCount() > 0) {
-                shutDown();
-                hideProgressBar();
-                return R.string.calc_stop;
-            } else {
-                executeBenchmarks(operation, threadPool);
-                cells.setValue(createCells(null, true));
-                return R.string.calc_start;
+        setToastMessage(R.string.calc_stopping);
+        Thread thread = new Thread(() -> {
+            while (true){
+                if(service.isTerminated()){
+                    hideProgressBar();
+                    setToastMessage(R.string.calc_stop);
+                    break;
+                }
             }
+        });
+        thread.start();
+    }
+
+    private boolean validateInputs(String operation, String threadPool) {
+        if (operation.isEmpty() || threadPool.isEmpty()) {
+            setToastMessage(R.string.empty_field);
+            return false;
+        } else if (!inputIsNumeric(operation) || !inputIsNumeric(threadPool)) {
+            setToastMessage(R.string.must_be_numeric);
+            return false;
+        } else if (Integer.parseInt(operation) <= 0 || Integer.parseInt(threadPool) <= 0) {
+            setToastMessage(R.string.must_be_positive);
+            return false;
         }
-        return message;
+        return true;
+    }
+
+    public void onButtonPressed(String operation, String threadPool) {
+        if (service != null && service.getActiveCount() > 0) {
+            shutDown();
+        } else if (validateInputs(operation, threadPool)) {
+            executeBenchmarks(operation, threadPool);
+            cells.setValue(createCells(null, true));
+            setToastMessage(R.string.calc_start);
+        }
     }
 
     public LiveData<Boolean> getIsCalculating() {
@@ -266,5 +277,13 @@ public class BenchmarksViewModel extends ViewModel {
 
     public LiveData<List<Cell>> getCells() {
         return cells;
+    }
+
+    public LiveData<Integer> getToastMessage() {
+        return toastMessage;
+    }
+
+    public void setToastMessage(int message) {
+        toastMessage.postValue(message);
     }
 }
