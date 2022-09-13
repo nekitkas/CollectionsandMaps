@@ -69,10 +69,6 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
                     binding.button.setText(R.string.start);
                     binding.button.setClickable(true);
                 }
-                if (message == R.string.calc_stopping) {
-                    binding.button.setText(R.string.wait);
-                    binding.button.setClickable(false);
-                }
             }
         });
 

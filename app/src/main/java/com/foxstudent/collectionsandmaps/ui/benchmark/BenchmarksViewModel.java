@@ -211,17 +211,8 @@ public class BenchmarksViewModel extends ViewModel {
 
     public void shutDown() {
         service.shutdownNow();
-        setToastMessage(R.string.calc_stopping);
-        final Thread awaitTermination = new Thread(() -> {
-            while (true) {
-                if (service.isTerminated()) {
-                    hideProgressBar();
-                    setToastMessage(R.string.calc_stop);
-                    break;
-                }
-            }
-        });
-        awaitTermination.start();
+        hideProgressBar();
+        setToastMessage(R.string.calc_stop);
     }
 
     public void onButtonPressed(String operation, String threadPool) {
