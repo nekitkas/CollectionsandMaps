@@ -13,12 +13,12 @@
     <string name="calc_stopping">Stopping calculations…</string>
     <string name="calc_complete">Calculation completed</string>
 
-    <string name="addToStart">Adding to start</string>
-    <string name="addToMiddle">Adding to middle</string>
+    <string name="addToStart">Adding to start in</string>
+    <string name="addToMiddle">Adding to middle in</string>
     <string name="addToEnd">Adding to end in</string>
-    <string name="removeFromStart">Remove from start</string>
-    <string name="removeFromMiddle">Remove from middle</string>
-    <string name="removeFromEnd">Remove from end</string>
+    <string name="removeFromStart">Remove from start in</string>
+    <string name="removeFromMiddle">Remove from middle in</string>
+    <string name="removeFromEnd">Remove from end in</string>
     <string name="searchIn">Search in</string>
 
     <string name="addTo">Add to</string>
@@ -30,7 +30,7 @@
     <string name="treeMap">TreeMap</string>
     <string name="hashMap">HashMap</string>
 
-    <string name="title">%1$s %2$s</string>
+    <string name="title">%1$s %2$s: %3$sms</string>
     <string name="must_be_numeric">Input must be a number!</string>
     <string name="must_be_more_than_zero">Input must be more than zero</string>
     <string name="must_be_positive">Input must be a positive number</string>

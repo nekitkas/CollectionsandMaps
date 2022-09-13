@@ -36,22 +36,21 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
 
 
     public static class ItemHolder extends RecyclerView.ViewHolder {
-        private final TextView operation, result;
+        private final TextView operation;
         private final ProgressBar progressBar;
 
         ItemHolder(View itemView) {
             super(itemView);
             operation = itemView.findViewById(R.id.operation);
             progressBar = itemView.findViewById(R.id.progressBar);
-            result = itemView.findViewById(R.id.result);
         }
 
         public void bind(Cell cell) {
-            String placeHolderName = operation.getContext().getString(cell.name);
-            String placeHolderOperation = operation.getContext().getString(cell.operation);
-            String title = operation.getContext().getString(R.string.title, placeHolderOperation, placeHolderName);
+            String placeHolderName = itemView.getContext().getString(cell.name);
+            String placeHolderOperation = itemView.getContext().getString(cell.operation);
+            String placeHolderResult = cell.result;
+            String title = operation.getContext().getString(R.string.title, placeHolderOperation, placeHolderName, placeHolderResult);
             operation.setText(title);
-            result.setText(cell.result);
 
             progressBarAnimate(cell);
         }
