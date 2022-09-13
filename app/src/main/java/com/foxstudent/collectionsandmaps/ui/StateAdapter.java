@@ -6,35 +6,23 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.foxstudent.collectionsandmaps.ui.benchmark.BenchmarksFragment;
 
 public class StateAdapter extends FragmentStateAdapter {
 
-    private final List<Fragment> fragments = new ArrayList<>();
-    private final List<String> titles = new ArrayList<>();
 
     public StateAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
     }
 
-    public void addFragment(Fragment fragment, String title) {
-        fragments.add(fragment);
-        titles.add(title);
-    }
-
-    public String getName(int position) {
-        return titles.get(position);
-    }
-
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        return fragments.get(position);
+        return BenchmarksFragment.newInstance(position);
     }
 
     @Override
     public int getItemCount() {
-        return fragments.size();
+        return 2;
     }
 }

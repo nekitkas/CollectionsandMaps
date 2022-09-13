@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.foxstudent.collectionsandmaps.R;
 import com.foxstudent.collectionsandmaps.databinding.FragmentBenchmarkBinding;
+import com.foxstudent.collectionsandmaps.models.Constants;
 
 import java.util.ArrayList;
 
@@ -21,15 +22,14 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
 
 
     private static final String KEY = "KEY";
-    private static final String DEFAULT = "DEFAULT";
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private FragmentBenchmarkBinding binding;
     private BenchmarksViewModel model;
 
-    public static BenchmarksFragment newInstance(String value) {
+    public static BenchmarksFragment newInstance(int type) {
         final BenchmarksFragment fragment = new BenchmarksFragment();
         final Bundle args = new Bundle();
-        args.putString(KEY, value);
+        args.putInt(KEY, type);
         fragment.setArguments(args);
 
         return fragment;
@@ -38,8 +38,8 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String args = getArguments() == null ? DEFAULT : getArguments().getString(KEY);
-        BenchmarksVMFactory factory = new BenchmarksVMFactory(args);
+        int type = getArguments() == null ? Constants.DEFAULT : getArguments().getInt(KEY);
+        BenchmarksVMFactory factory = new BenchmarksVMFactory(type);
         model = new ViewModelProvider(getViewModelStore(), factory).get(BenchmarksViewModel.class);
         model.onCreate();
     }
@@ -57,19 +57,19 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
         super.onViewCreated(view, savedInstanceState);
         model.getCells().observe(requireActivity(), cells -> adapter.submitList(new ArrayList<>(cells)));
         model.getToastMessage().observe(requireActivity(), message -> {
-            if(message != 0){
+            if (message != 0) {
                 Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
-                if(message == R.string.calc_start)
+                if (message == R.string.calc_start)
                     binding.button.setText(R.string.stop);
-                if(message == R.string.calc_stop){
+                if (message == R.string.calc_stop) {
                     binding.button.setText(R.string.start);
                     binding.button.setClickable(true);
                 }
-                if(message == R.string.calc_complete){
+                if (message == R.string.calc_complete) {
                     binding.button.setText(R.string.start);
                     binding.button.setClickable(true);
                 }
-                if(message == R.string.calc_stopping){
+                if (message == R.string.calc_stopping) {
                     binding.button.setText(R.string.wait);
                     binding.button.setClickable(false);
                 }

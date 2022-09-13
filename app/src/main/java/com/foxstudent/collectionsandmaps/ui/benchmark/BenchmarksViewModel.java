@@ -25,12 +25,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class BenchmarksViewModel extends ViewModel {
 
     private final static String EMPTY_VALUE = "N/A";
-    private final String type;
+    private final int type;
     private final MutableLiveData<List<Cell>> cells = new MutableLiveData<>();
     private final MutableLiveData<Integer> toastMessage = new MutableLiveData<>();
     private ThreadPoolExecutor service;
 
-    public BenchmarksViewModel(String args) {
+    public BenchmarksViewModel(int args) {
         this.type = args;
     }
 
@@ -40,11 +40,10 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public int getSpanCount() {
-        if (type.equals(Constants.COLLECTION.toString())) {
+        if (type == Constants.COLLECTION)
             return 3;
-        } else {
+        else
             return 2;
-        }
     }
 
     public List<Cell> createCells(String result, boolean isInProgress) {
@@ -67,11 +66,11 @@ public class BenchmarksViewModel extends ViewModel {
 
     public List<Integer> getNames() {
         final List<Integer> names = new ArrayList<>();
-        if (type.equals(Constants.COLLECTION.toString())) {
+        if (type == Constants.COLLECTION) {
             names.add(R.string.arrayList);
             names.add(R.string.linkedList);
             names.add(R.string.copyOnWrite);
-        } else {
+        } else if (type == Constants.MAP) {
             names.add(R.string.treeMap);
             names.add(R.string.hashMap);
         }
@@ -80,7 +79,7 @@ public class BenchmarksViewModel extends ViewModel {
 
     public List<Integer> getOperations() {
         final List<Integer> operations = new ArrayList<>();
-        if (type.equals(Constants.COLLECTION.toString())) {
+        if (type == Constants.COLLECTION) {
             operations.add(R.string.addToStart);
             operations.add(R.string.addToMiddle);
             operations.add(R.string.addToEnd);
@@ -88,7 +87,7 @@ public class BenchmarksViewModel extends ViewModel {
             operations.add(R.string.removeFromMiddle);
             operations.add(R.string.removeFromEnd);
             operations.add(R.string.searchIn);
-        } else {
+        } else if (type == Constants.MAP) {
             operations.add(R.string.addTo);
             operations.add(R.string.searchIn);
             operations.add(R.string.removeFrom);
@@ -186,19 +185,16 @@ public class BenchmarksViewModel extends ViewModel {
     public void executeBenchmarks(String operation, String threadPool) {
         service = (ThreadPoolExecutor) Executors.newFixedThreadPool(Integer.parseInt(threadPool));
         final Handler handler = new Handler();
-
         final List<Cell> cellList = cells.getValue();
         for (Cell cell : cellList) {
             service.submit(() -> {
                 updateCell(cellList.indexOf(cell), String.valueOf(measureTime(cell, Integer.parseInt(operation))), false);
                 if (service.getCompletedTaskCount() == cellList.size() - 1) {
-                    handler.post(() -> {
-                        service.shutdown();
-                        setToastMessage(R.string.calc_complete);
-                    });
+                    handler.post(() -> setToastMessage(R.string.calc_complete));
                 }
             });
         }
+        service.shutdown();
     }
 
     private boolean inputIsNumeric(String input) {
@@ -228,8 +224,8 @@ public class BenchmarksViewModel extends ViewModel {
         service.shutdownNow();
         setToastMessage(R.string.calc_stopping);
         final Thread awaitTermination = new Thread(() -> {
-            while (true){
-                if(service.isTerminated()){
+            while (true) {
+                if (service.isTerminated()) {
                     hideProgressBar();
                     setToastMessage(R.string.calc_stop);
                     break;

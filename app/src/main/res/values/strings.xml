@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Collections and Maps</string>
-    <string name="collection">Collection</string>
-    <string name="map">Map</string>
     <string name="button">Start</string>
     <string name="operations">Operations</string>
     <string name="threads">Threads</string>
@@ -36,4 +34,9 @@
     <string name="must_be_numeric">Input must be a number!</string>
     <string name="must_be_more_than_zero">Input must be more than zero</string>
     <string name="must_be_positive">Input must be a positive number</string>
+
+    <string-array name="fragmentNames">
+        <item>Collections</item>
+        <item>Maps</item>
+    </string-array>
 </resources>

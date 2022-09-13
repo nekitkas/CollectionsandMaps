@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 public class BenchmarksVMFactory implements ViewModelProvider.Factory {
 
-    private final String arg;
+    private final int arg;
 
-    BenchmarksVMFactory(String arg) {
+    BenchmarksVMFactory(int arg) {
         this.arg = arg;
     }
 

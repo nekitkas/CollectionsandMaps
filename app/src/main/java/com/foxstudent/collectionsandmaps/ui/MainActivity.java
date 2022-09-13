@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.foxstudent.collectionsandmaps.R;
 import com.foxstudent.collectionsandmaps.databinding.ActivityMainBinding;
-import com.foxstudent.collectionsandmaps.ui.benchmark.BenchmarksFragment;
-import com.foxstudent.collectionsandmaps.models.Constants;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 
@@ -27,11 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFragments() {
         StateAdapter stateAdapter = new StateAdapter(getSupportFragmentManager(), getLifecycle());
-        stateAdapter.addFragment(BenchmarksFragment.newInstance(Constants.COLLECTION.toString()), getString(R.string.collection));
-        stateAdapter.addFragment(BenchmarksFragment.newInstance(Constants.MAP.toString()), getString(R.string.map));
-
         binding.viewPager2.setAdapter(stateAdapter);
-        tabLayoutMediator = new TabLayoutMediator(binding.tabLayout, binding.viewPager2, (tab, position) -> tab.setText(stateAdapter.getName(position)));
+        tabLayoutMediator = new TabLayoutMediator(binding.tabLayout, binding.viewPager2, (tab, position) ->
+                tab.setText(getResources().getStringArray(R.array.fragmentNames)[position]));
         tabLayoutMediator.attach();
     }
 
