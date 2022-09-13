@@ -237,10 +237,10 @@ public class BenchmarksViewModel extends ViewModel {
                 threadPoolToInt = 0;
                 setToastMessage(R.string.must_be_numeric);
             }
-            if (service != null && service.getActiveCount() > 0) {
-                shutDown();
-            } else if (operationToInt <= 0 || threadPoolToInt <= 0) {
+            if (operationToInt <= 0 || threadPoolToInt <= 0) {
                 setToastMessage(R.string.must_be_positive);
+            } else if (service != null && service.getActiveCount() > 0) {
+                shutDown();
             } else {
                 executeBenchmarks(operationToInt, threadPoolToInt);
                 cells.setValue(createCells(0, true));
