@@ -30,8 +30,8 @@ public class BenchmarksViewModel extends ViewModel {
     private final MutableLiveData<Integer> toastMessage = new MutableLiveData<>();
     private ThreadPoolExecutor service;
 
-    public BenchmarksViewModel(int args) {
-        this.type = args;
+    public BenchmarksViewModel(int type) {
+        this.type = type;
     }
 
     public void onCreate() {

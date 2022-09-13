@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 public class BenchmarksVMFactory implements ViewModelProvider.Factory {
 
-    private final int arg;
+    private final int type;
 
-    BenchmarksVMFactory(int arg) {
-        this.arg = arg;
+    BenchmarksVMFactory(int type) {
+        this.type = type;
     }
 
     @SuppressWarnings("unchecked")
@@ -18,7 +18,7 @@ public class BenchmarksVMFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(BenchmarksViewModel.class)) {
-            return (T) new BenchmarksViewModel(arg);
+            return (T) new BenchmarksViewModel(type);
         }
         throw new IllegalArgumentException("Failed to create ViewModel");
     }
