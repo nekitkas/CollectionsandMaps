@@ -17,7 +17,6 @@ import com.foxstudent.collectionsandmaps.models.Cell;
 
 public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemHolder> {
 
-
     BenchmarksAdapter() {
         super(DIFF_CALLBACK);
     }
@@ -46,10 +45,10 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
         }
 
         public void bind(Cell cell) {
-            String placeHolderName = itemView.getContext().getString(cell.name);
-            String placeHolderOperation = itemView.getContext().getString(cell.operation);
-            String placeHolderResult = cell.result;
-            String title = operation.getContext().getString(R.string.title, placeHolderOperation, placeHolderName, placeHolderResult);
+            final String placeHolderName = itemView.getContext().getString(cell.name);
+            final String placeHolderOperation = itemView.getContext().getString(cell.operation);
+            final String placeHolderResult = cell.result;
+            final String title = operation.getContext().getString(R.string.title, placeHolderOperation, placeHolderName, placeHolderResult);
             operation.setText(title);
 
             progressBarAnimate(cell);
@@ -60,9 +59,7 @@ public class BenchmarksAdapter extends ListAdapter<Cell, BenchmarksAdapter.ItemH
             if (progressBar.getAlpha() == expected) {
                 return;
             }
-            progressBar.animate()
-                    .alpha(expected)
-                    .setDuration(600);
+            progressBar.animate().alpha(expected).setDuration(600);
         }
     }
 

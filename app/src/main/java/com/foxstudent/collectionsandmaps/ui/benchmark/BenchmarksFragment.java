@@ -18,10 +18,11 @@ import com.foxstudent.collectionsandmaps.models.Constants;
 
 import java.util.ArrayList;
 
+
 public class BenchmarksFragment extends Fragment implements View.OnClickListener {
 
-
     private static final String KEY = "KEY";
+
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private FragmentBenchmarkBinding binding;
     private BenchmarksViewModel model;
@@ -38,8 +39,8 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int type = getArguments() == null ? Constants.DEFAULT : getArguments().getInt(KEY);
-        BenchmarksVMFactory factory = new BenchmarksVMFactory(type);
+        final int type = getArguments() == null ? Constants.DEFAULT : getArguments().getInt(KEY);
+        final BenchmarksVMFactory factory = new BenchmarksVMFactory(type);
         model = new ViewModelProvider(getViewModelStore(), factory).get(BenchmarksViewModel.class);
         model.onCreate();
     }
@@ -59,8 +60,9 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
         model.getToastMessage().observe(requireActivity(), message -> {
             if (message != 0) {
                 Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
-                if (message == R.string.calc_start)
+                if (message == R.string.calc_start) {
                     binding.button.setText(R.string.stop);
+                }
                 if (message == R.string.calc_stop) {
                     binding.button.setText(R.string.start);
                     binding.button.setClickable(true);
@@ -71,18 +73,15 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
                 }
             }
         });
-
-        GridLayoutManager manager = new GridLayoutManager(getContext(), model.getSpanCount());
-        binding.rvGrid.setLayoutManager(manager);
+        binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), model.getSpanCount()));
         binding.rvGrid.setAdapter(adapter);
-
         binding.button.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        String operationInput = binding.etOperations.getText().toString().trim();
-        String threadInput = binding.etThreads.getText().toString().trim();
+        final String operationInput = binding.etOperations.getText().toString().trim();
+        final String threadInput = binding.etThreads.getText().toString().trim();
         model.onButtonPressed(operationInput, threadInput);
     }
 

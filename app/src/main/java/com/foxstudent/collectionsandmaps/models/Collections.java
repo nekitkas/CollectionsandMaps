@@ -1,11 +1,10 @@
 package com.foxstudent.collectionsandmaps.models;
 
-
 import java.util.List;
 import java.util.Map;
 
-public class Collections {
 
+public class Collections {
 
     public static float measureTime(Runnable runnable) {
         long startTime = System.currentTimeMillis();

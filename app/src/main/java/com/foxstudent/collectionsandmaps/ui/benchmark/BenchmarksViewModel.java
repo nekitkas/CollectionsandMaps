@@ -1,6 +1,5 @@
 package com.foxstudent.collectionsandmaps.ui.benchmark;
 
-
 import android.annotation.SuppressLint;
 import android.os.Handler;
 
@@ -22,11 +21,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+
 public class BenchmarksViewModel extends ViewModel {
 
-    private final int type;
     private final MutableLiveData<List<Cell>> cells = new MutableLiveData<>();
     private final MutableLiveData<Integer> toastMessage = new MutableLiveData<>();
+    private final Handler handler = new Handler();
+    private final int type;
     private ThreadPoolExecutor service;
 
     public BenchmarksViewModel(int type) {
@@ -39,10 +40,7 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public int getSpanCount() {
-        if (type == Constants.COLLECTION)
-            return 3;
-        else
-            return 2;
+        return type == Constants.COLLECTION ? 3 : 2;
     }
 
     public List<Cell> createCells(float result, boolean isInProgress) {
@@ -52,12 +50,7 @@ public class BenchmarksViewModel extends ViewModel {
 
         for (int operation : operations) {
             for (int name : names) {
-                cells.add(new Cell(
-                        name,
-                        String.valueOf(result),
-                        operation,
-                        isInProgress
-                ));
+                cells.add(new Cell(name, String.valueOf(result), operation, isInProgress));
             }
         }
         return cells;
@@ -183,7 +176,7 @@ public class BenchmarksViewModel extends ViewModel {
 
     public void executeBenchmarks(int operation, int threadPool) {
         service = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadPool);
-        final Handler handler = new Handler();
+
         final List<Cell> cellList = cells.getValue();
         for (Cell cell : cellList) {
             service.submit(() -> {
@@ -216,6 +209,10 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public void onButtonPressed(String operation, String threadPool) {
+        if (service != null && service.getActiveCount() > 0) {
+            shutDown();
+            return;
+        }
         if (operation.isEmpty() || threadPool.isEmpty()) {
             setToastMessage(R.string.empty_field);
         } else {
@@ -224,14 +221,11 @@ public class BenchmarksViewModel extends ViewModel {
                 operationToInt = Integer.parseInt(operation);
                 threadPoolToInt = Integer.parseInt(threadPool);
             } catch (NumberFormatException exception) {
-                operationToInt = 0;
-                threadPoolToInt = 0;
                 setToastMessage(R.string.must_be_numeric);
+                return;
             }
             if (operationToInt <= 0 || threadPoolToInt <= 0) {
                 setToastMessage(R.string.must_be_positive);
-            } else if (service != null && service.getActiveCount() > 0) {
-                shutDown();
             } else {
                 executeBenchmarks(operationToInt, threadPoolToInt);
                 cells.setValue(createCells(0, true));
