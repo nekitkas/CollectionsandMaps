@@ -56,10 +56,10 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        model.getCells().observe(requireActivity(), cells -> adapter.submitList(new ArrayList<>(cells)));
-        model.getToastMessage().observe(requireActivity(), message -> {
+        model.getCells().observe(getViewLifecycleOwner(), cells -> adapter.submitList(new ArrayList<>(cells)));
+        model.getToastMessage().observe(getViewLifecycleOwner(), message -> {
             if (message != 0) {
-                Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
                 if (message == R.string.calc_start) {
                     binding.button.setText(R.string.stop);
                 }

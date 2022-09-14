@@ -18,7 +18,10 @@ public class BenchmarksVMFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(BenchmarksViewModel.class)) {
-            return (T) new BenchmarksViewModel(type);
+            if (type == 0)
+                return (T) new BenchmarksViewModel(new BenchmarkCollection());
+            else
+                return (T) new BenchmarksViewModel(new BenchmarkMap());
         }
         throw new IllegalArgumentException("Failed to create ViewModel");
     }

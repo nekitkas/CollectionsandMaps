@@ -8,9 +8,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.foxstudent.collectionsandmaps.R;
+import com.foxstudent.collectionsandmaps.models.Benchmark;
 import com.foxstudent.collectionsandmaps.models.Cell;
 import com.foxstudent.collectionsandmaps.models.Collections;
-import com.foxstudent.collectionsandmaps.models.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,11 +27,11 @@ public class BenchmarksViewModel extends ViewModel {
     private final MutableLiveData<List<Cell>> cells = new MutableLiveData<>();
     private final MutableLiveData<Integer> toastMessage = new MutableLiveData<>();
     private final Handler handler = new Handler();
-    private final int type;
+    private final Benchmark benchmark;
     private ThreadPoolExecutor service;
 
-    public BenchmarksViewModel(int type) {
-        this.type = type;
+    public BenchmarksViewModel(Benchmark benchmark) {
+        this.benchmark = benchmark;
     }
 
     public void onCreate() {
@@ -40,13 +40,13 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public int getSpanCount() {
-        return type == Constants.COLLECTION ? 3 : 2;
+        return benchmark.getSpanCount();
     }
 
     public List<Cell> createCells(float result, boolean isInProgress) {
         final List<Cell> cells = new ArrayList<>();
-        final List<Integer> names = getNames();
-        final List<Integer> operations = getOperations();
+        final List<Integer> names = benchmark.getNames();
+        final List<Integer> operations = benchmark.getOperations();
 
         for (int operation : operations) {
             for (int name : names) {
@@ -56,37 +56,6 @@ public class BenchmarksViewModel extends ViewModel {
         return cells;
     }
 
-    public List<Integer> getNames() {
-        final List<Integer> names = new ArrayList<>();
-        if (type == Constants.COLLECTION) {
-            names.add(R.string.arrayList);
-            names.add(R.string.linkedList);
-            names.add(R.string.copyOnWrite);
-        } else if (type == Constants.MAP) {
-            names.add(R.string.treeMap);
-            names.add(R.string.hashMap);
-        }
-        return names;
-    }
-
-    public List<Integer> getOperations() {
-        final List<Integer> operations = new ArrayList<>();
-        if (type == Constants.COLLECTION) {
-            operations.add(R.string.addToStart);
-            operations.add(R.string.addToMiddle);
-            operations.add(R.string.addToEnd);
-            operations.add(R.string.removeFromStart);
-            operations.add(R.string.removeFromMiddle);
-            operations.add(R.string.removeFromEnd);
-            operations.add(R.string.searchIn);
-        } else if (type == Constants.MAP) {
-            operations.add(R.string.addTo);
-            operations.add(R.string.searchIn);
-            operations.add(R.string.removeFrom);
-        }
-        return operations;
-    }
-
     public void updateCell(int position, float result, boolean isInProgress) {
         final List<Cell> cellList = cells.getValue();
         cellList.set(position, new Cell(
@@ -94,7 +63,7 @@ public class BenchmarksViewModel extends ViewModel {
                 String.valueOf(result),
                 cellList.get(position).operation,
                 isInProgress));
-        cells.postValue(cellList);
+        cells.setValue(cellList);
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -180,7 +149,8 @@ public class BenchmarksViewModel extends ViewModel {
         final List<Cell> cellList = cells.getValue();
         for (Cell cell : cellList) {
             service.submit(() -> {
-                updateCell(cellList.indexOf(cell), measureTime(cell, operation), false);
+                final float result = measureTime(cell, operation);
+                handler.post(() -> updateCell(cellList.indexOf(cell), result, false));
                 if (service.getCompletedTaskCount() == cellList.size() - 1) {
                     handler.post(() -> setToastMessage(R.string.calc_complete));
                 }
@@ -191,15 +161,10 @@ public class BenchmarksViewModel extends ViewModel {
 
     public void hideProgressBar() {
         final List<Cell> cellList = cells.getValue();
-        float result;
         for (int i = 0; i < cellList.size(); i++) {
-            try {
-                result = Float.parseFloat(cellList.get(i).result);
-            } catch (NumberFormatException exception) {
-                result = 0;
-            }
-            updateCell(i, result, false);
+            cellList.set(i, new Cell(cellList.get(i).name, cellList.get(i).result, cellList.get(i).operation, false));
         }
+        cells.setValue(cellList);
     }
 
     public void shutDown() {
@@ -243,6 +208,6 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public void setToastMessage(int message) {
-        toastMessage.postValue(message);
+        toastMessage.setValue(message);
     }
 }
