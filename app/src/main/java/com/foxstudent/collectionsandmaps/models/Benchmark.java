@@ -6,7 +6,7 @@ public interface Benchmark {
 
     int getSpanCount();
 
-    List<Integer> getNames();
+    List<Cell> createCells(float result, boolean isInProgress);
 
-    List<Integer> getOperations();
+    float measureTime(Cell cell, int operations);
 }

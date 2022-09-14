@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.foxstudent.collectionsandmaps.models.BenchmarkCollection;
+import com.foxstudent.collectionsandmaps.models.BenchmarkMap;
+
 
 public class BenchmarksVMFactory implements ViewModelProvider.Factory {
 
