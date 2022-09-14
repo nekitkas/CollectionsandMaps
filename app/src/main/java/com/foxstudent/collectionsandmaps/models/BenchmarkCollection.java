@@ -3,9 +3,6 @@ package com.foxstudent.collectionsandmaps.models;
 import android.annotation.SuppressLint;
 
 import com.foxstudent.collectionsandmaps.R;
-import com.foxstudent.collectionsandmaps.models.Benchmark;
-import com.foxstudent.collectionsandmaps.models.Cell;
-import com.foxstudent.collectionsandmaps.models.Collections;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
