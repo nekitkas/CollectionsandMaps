@@ -7,6 +7,7 @@ import com.foxstudent.collectionsandmaps.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class BenchmarkMap implements Benchmark {
@@ -34,28 +35,33 @@ public class BenchmarkMap implements Benchmark {
     @Override
     @SuppressLint("NonConstantResourceId")
     public float measureTime(Cell cell, int operations) {
+        final Map<Integer, Integer> map;
         switch (cell.name) {
             case R.string.treeMap:
-                switch (cell.operation) {
-                    case R.string.addTo:
-                        return Collections.mapAddingNew(new TreeMap<>(), operations);
-                    case R.string.removeFrom:
-                        return Collections.mapRemoving(new TreeMap<>(), operations);
-                    case R.string.searchIn:
-                        return Collections.mapSearchByKey(new TreeMap<>(), operations);
-                }
+                map = new TreeMap<>();
+                break;
             case R.string.hashMap:
-                switch (cell.operation) {
-                    case R.string.addTo:
-                        return Collections.mapAddingNew(new HashMap<>(), operations);
-                    case R.string.removeFrom:
-                        return Collections.mapRemoving(new HashMap<>(), operations);
-                    case R.string.searchIn:
-                        return Collections.mapSearchByKey(new HashMap<>(), operations);
-                }
+                map = new HashMap<>();
+                break;
             default:
-                return 0f;
+                throw new IllegalStateException("Unexpected value: " + cell.name);
         }
+        fillMap(map, operations);
+        final float result;
+        switch (cell.operation) {
+            case R.string.addTo:
+                result = mapAddingNew(map, operations);
+                break;
+            case R.string.removeFrom:
+                result = mapRemoving(map, operations);
+                break;
+            case R.string.searchIn:
+                result = mapSearchByKey(map, operations);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + cell.operation);
+        }
+        return result;
     }
 
     private List<Integer> getNames() {
@@ -71,5 +77,42 @@ public class BenchmarkMap implements Benchmark {
         operations.add(R.string.searchIn);
         operations.add(R.string.removeFrom);
         return operations;
+    }
+
+    private float track(Runnable runnable) {
+        long startTime = System.currentTimeMillis();
+        runnable.run();
+        long endTime = System.currentTimeMillis();
+        return (endTime - startTime) / 1000F;
+    }
+
+    private float mapAddingNew(Map<Integer, Integer> map, int value) {
+        return track(() -> {
+            for (int i = 0; i < value; i++) {
+                map.put(i, 0);
+            }
+        });
+    }
+
+    private float mapSearchByKey(Map<Integer, Integer> map, int value) {
+        return track(() -> {
+            for (int i = 0; i < map.size(); i++) {
+                map.get(i);
+            }
+        });
+    }
+
+    private float mapRemoving(Map<Integer, Integer> map, int value) {
+        return track(() -> {
+            for (int i = 0; i < map.size(); i++) {
+                map.remove(i);
+            }
+        });
+    }
+
+    private void fillMap(Map<Integer, Integer> map, int value) {
+        for (int i = 0; i < value; i++) {
+            map.put(i, 0);
+        }
     }
 }

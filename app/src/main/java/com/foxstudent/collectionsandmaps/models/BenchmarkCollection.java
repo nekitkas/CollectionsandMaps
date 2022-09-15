@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import com.foxstudent.collectionsandmaps.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -34,61 +35,47 @@ public class BenchmarkCollection implements Benchmark {
     @SuppressLint("NonConstantResourceId")
     @Override
     public float measureTime(Cell cell, int operations) {
+        final List<Integer> list;
         switch (cell.name) {
             case R.string.arrayList:
-                switch (cell.operation) {
-                    case R.string.addToStart:
-                        return Collections.listAddInTheBeginning(new ArrayList<>(), operations);
-                    case R.string.addToMiddle:
-                        return Collections.listAddInTheMiddle(new ArrayList<>(), operations);
-                    case R.string.addToEnd:
-                        return Collections.listAddInTheEnd(new ArrayList<>(), operations);
-                    case R.string.searchIn:
-                        return Collections.listSearchByValue(new ArrayList<>(), operations);
-                    case R.string.removeFromStart:
-                        return Collections.listRemoveInTheBeginning(new ArrayList<>(), operations);
-                    case R.string.removeFromMiddle:
-                        return Collections.listRemoveInTheMiddle(new ArrayList<>(), operations);
-                    case R.string.removeFromEnd:
-                        return Collections.listRemoveInTheEnd(new ArrayList<>(), operations);
-                }
+                list = new ArrayList<>(Collections.nCopies(operations, 0));
+                break;
             case R.string.linkedList:
-                switch (cell.operation) {
-                    case R.string.addToStart:
-                        return Collections.listAddInTheBeginning(new LinkedList<>(), operations);
-                    case R.string.addToMiddle:
-                        return Collections.listAddInTheMiddle(new LinkedList<>(), operations);
-                    case R.string.addToEnd:
-                        return Collections.listAddInTheEnd(new LinkedList<>(), operations);
-                    case R.string.searchIn:
-                        return Collections.listSearchByValue(new LinkedList<>(), operations);
-                    case R.string.removeFromStart:
-                        return Collections.listRemoveInTheBeginning(new LinkedList<>(), operations);
-                    case R.string.removeFromMiddle:
-                        return Collections.listRemoveInTheMiddle(new LinkedList<>(), operations);
-                    case R.string.removeFromEnd:
-                        return Collections.listRemoveInTheEnd(new LinkedList<>(), operations);
-                }
+                list = new LinkedList<>(Collections.nCopies(operations, 0));
+                break;
             case R.string.copyOnWrite:
-                switch (cell.operation) {
-                    case R.string.addToStart:
-                        return Collections.listAddInTheBeginning(new CopyOnWriteArrayList<>(), operations);
-                    case R.string.addToMiddle:
-                        return Collections.listAddInTheMiddle(new CopyOnWriteArrayList<>(), operations);
-                    case R.string.addToEnd:
-                        return Collections.listAddInTheEnd(new CopyOnWriteArrayList<>(), operations);
-                    case R.string.searchIn:
-                        return Collections.listSearchByValue(new CopyOnWriteArrayList<>(), operations);
-                    case R.string.removeFromStart:
-                        return Collections.listRemoveInTheBeginning(new CopyOnWriteArrayList<>(), operations);
-                    case R.string.removeFromMiddle:
-                        return Collections.listRemoveInTheMiddle(new CopyOnWriteArrayList<>(), operations);
-                    case R.string.removeFromEnd:
-                        return Collections.listRemoveInTheEnd(new CopyOnWriteArrayList<>(), operations);
-                }
+                list = new CopyOnWriteArrayList<>(Collections.nCopies(operations, 0));
+                break;
             default:
-                return 0f;
+                throw new IllegalStateException("Unexpected value: " + cell.name);
         }
+        final float result;
+        switch (cell.operation) {
+            case R.string.addToStart:
+                result = listAddInTheBeginning(list, operations);
+                break;
+            case R.string.addToMiddle:
+                result = listAddInTheMiddle(list, operations);
+                break;
+            case R.string.addToEnd:
+                result = listAddInTheEnd(list, operations);
+                break;
+            case R.string.removeFromStart:
+                result = listRemoveInTheBeginning(list, operations);
+                break;
+            case R.string.removeFromMiddle:
+                result = listRemoveInTheMiddle(list, operations);
+                break;
+            case R.string.removeFromEnd:
+                result = listRemoveInTheEnd(list, operations);
+                break;
+            case R.string.searchIn:
+                result = listSearchByValue(list, operations);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + cell.operation);
+        }
+        return result;
     }
 
     private List<Integer> getNames() {
@@ -109,5 +96,68 @@ public class BenchmarkCollection implements Benchmark {
         operations.add(R.string.removeFromEnd);
         operations.add(R.string.searchIn);
         return operations;
+    }
+
+    private float track(Runnable runnable) {
+        long startTime = System.currentTimeMillis();
+        runnable.run();
+        long endTime = System.currentTimeMillis();
+        return (endTime - startTime) / 1000F;
+    }
+
+    private float listAddInTheBeginning(List<Integer> list, int value) {
+        return track(() -> {
+            for (int i = 0; i < value; i++) {
+                list.add(0, 0);
+            }
+        });
+    }
+
+    private float listAddInTheMiddle(List<Integer> list, int value) {
+        return track(() -> {
+            for (int i = 0; i < value; i++) {
+                list.add(list.size() / 2, 0);
+            }
+        });
+    }
+
+    private float listAddInTheEnd(List<Integer> list, int value) {
+        return track(() -> {
+            for (int i = 0; i < value; i++) {
+                list.add(list.size(), 0);
+            }
+        });
+    }
+
+    private float listRemoveInTheBeginning(List<Integer> list, int value) {
+        return track(() -> {
+            for (int i = 0; i < list.size(); i++) {
+                list.remove(0);
+            }
+        });
+    }
+
+    private float listRemoveInTheMiddle(List<Integer> list, int value) {
+        return track(() -> {
+            for (int i = 0; i < list.size(); i++) {
+                list.remove(list.size() / 2);
+            }
+        });
+    }
+
+    private float listRemoveInTheEnd(List<Integer> list, int value) {
+        return track(() -> {
+            for (int i = 0; i < list.size(); i++) {
+                list.remove(list.size() - 1);
+            }
+        });
+    }
+
+    private float listSearchByValue(List<Integer> list, int value) {
+        return track(() -> {
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i);
+            }
+        });
     }
 }
