@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BenchmarkCollection implements Benchmark {
 
-    final private Random random = new Random();
+    private final Random random = new Random();
 
 
     @Override
