@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 
 public class BenchmarkMap implements Benchmark {
+
+    final Random random = new Random();
 
 
     @Override
@@ -50,13 +53,13 @@ public class BenchmarkMap implements Benchmark {
         final float result;
         switch (cell.operation) {
             case R.string.addTo:
-                result = mapAddingNew(map, operations);
+                result = mapAddingNew(map);
                 break;
             case R.string.removeFrom:
-                result = mapRemoving(map, operations);
+                result = mapRemoving(map);
                 break;
             case R.string.searchIn:
-                result = mapSearchByKey(map, operations);
+                result = mapSearchByKey(map);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + cell.operation);
@@ -86,28 +89,16 @@ public class BenchmarkMap implements Benchmark {
         return (endTime - startTime) / 1000F;
     }
 
-    private float mapAddingNew(Map<Integer, Integer> map, int value) {
-        return track(() -> {
-            for (int i = 0; i < value; i++) {
-                map.put(i, 0);
-            }
-        });
+    private float mapAddingNew(Map<Integer, Integer> map) {
+        return track(() -> map.put(0, 0));
     }
 
-    private float mapSearchByKey(Map<Integer, Integer> map, int value) {
-        return track(() -> {
-            for (int i = 0; i < map.size(); i++) {
-                map.get(i);
-            }
-        });
+    private float mapSearchByKey(Map<Integer, Integer> map) {
+        return track(() -> map.get(random.nextInt(map.size() - 1)));
     }
 
-    private float mapRemoving(Map<Integer, Integer> map, int value) {
-        return track(() -> {
-            for (int i = 0; i < map.size(); i++) {
-                map.remove(i);
-            }
-        });
+    private float mapRemoving(Map<Integer, Integer> map) {
+        return track(() -> map.remove(0));
     }
 
     private void fillMap(Map<Integer, Integer> map, int value) {

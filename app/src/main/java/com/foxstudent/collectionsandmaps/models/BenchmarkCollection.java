@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BenchmarkCollection implements Benchmark {
+
+    final Random random = new Random();
 
 
     @Override
@@ -52,25 +55,25 @@ public class BenchmarkCollection implements Benchmark {
         final float result;
         switch (cell.operation) {
             case R.string.addToStart:
-                result = listAddInTheBeginning(list, operations);
+                result = listAddInTheBeginning(list);
                 break;
             case R.string.addToMiddle:
-                result = listAddInTheMiddle(list, operations);
+                result = listAddInTheMiddle(list);
                 break;
             case R.string.addToEnd:
-                result = listAddInTheEnd(list, operations);
+                result = listAddInTheEnd(list);
                 break;
             case R.string.removeFromStart:
-                result = listRemoveInTheBeginning(list, operations);
+                result = listRemoveInTheBeginning(list);
                 break;
             case R.string.removeFromMiddle:
-                result = listRemoveInTheMiddle(list, operations);
+                result = listRemoveInTheMiddle(list);
                 break;
             case R.string.removeFromEnd:
-                result = listRemoveInTheEnd(list, operations);
+                result = listRemoveInTheEnd(list);
                 break;
             case R.string.searchIn:
-                result = listSearchByValue(list, operations);
+                result = listSearchByValue(list);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + cell.operation);
@@ -105,59 +108,31 @@ public class BenchmarkCollection implements Benchmark {
         return (endTime - startTime) / 1000F;
     }
 
-    private float listAddInTheBeginning(List<Integer> list, int value) {
-        return track(() -> {
-            for (int i = 0; i < value; i++) {
-                list.add(0, 0);
-            }
-        });
+    private float listAddInTheBeginning(List<Integer> list) {
+        return track(() -> list.add(0));
     }
 
-    private float listAddInTheMiddle(List<Integer> list, int value) {
-        return track(() -> {
-            for (int i = 0; i < value; i++) {
-                list.add(list.size() / 2, 0);
-            }
-        });
+    private float listAddInTheMiddle(List<Integer> list) {
+        return track(() -> list.add(list.size() / 2, 0));
     }
 
-    private float listAddInTheEnd(List<Integer> list, int value) {
-        return track(() -> {
-            for (int i = 0; i < value; i++) {
-                list.add(list.size(), 0);
-            }
-        });
+    private float listAddInTheEnd(List<Integer> list) {
+        return track(() -> list.add(list.size(), 0));
     }
 
-    private float listRemoveInTheBeginning(List<Integer> list, int value) {
-        return track(() -> {
-            for (int i = 0; i < list.size(); i++) {
-                list.remove(0);
-            }
-        });
+    private float listRemoveInTheBeginning(List<Integer> list) {
+        return track(() -> list.remove(0));
     }
 
-    private float listRemoveInTheMiddle(List<Integer> list, int value) {
-        return track(() -> {
-            for (int i = 0; i < list.size(); i++) {
-                list.remove(list.size() / 2);
-            }
-        });
+    private float listRemoveInTheMiddle(List<Integer> list) {
+        return track(() -> list.remove(list.size() / 2));
     }
 
-    private float listRemoveInTheEnd(List<Integer> list, int value) {
-        return track(() -> {
-            for (int i = 0; i < list.size(); i++) {
-                list.remove(list.size() - 1);
-            }
-        });
+    private float listRemoveInTheEnd(List<Integer> list) {
+        return track(() -> list.remove(list.size() - 1));
     }
 
-    private float listSearchByValue(List<Integer> list, int value) {
-        return track(() -> {
-            for (int i = 0; i < list.size(); i++) {
-                list.get(i);
-            }
-        });
+    private float listSearchByValue(List<Integer> list) {
+        return track(() -> list.get(random.nextInt(list.size() - 1)));
     }
 }
