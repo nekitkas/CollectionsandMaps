@@ -13,7 +13,6 @@ import java.util.TreeMap;
 
 public class BenchmarkMap implements Benchmark {
 
-    final Random random = new Random();
 
 
     @Override
@@ -94,7 +93,7 @@ public class BenchmarkMap implements Benchmark {
     }
 
     private float mapSearchByKey(Map<Integer, Integer> map) {
-        return track(() -> map.get(random.nextInt(map.size() - 1)));
+        return track(() -> map.get(0));
     }
 
     private float mapRemoving(Map<Integer, Integer> map) {
