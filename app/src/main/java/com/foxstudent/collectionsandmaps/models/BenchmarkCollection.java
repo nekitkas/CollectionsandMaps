@@ -15,7 +15,6 @@ public class BenchmarkCollection implements Benchmark {
 
     private final Random random = new Random();
 
-
     @Override
     public int getSpanCount() {
         return 3;
@@ -133,6 +132,7 @@ public class BenchmarkCollection implements Benchmark {
     }
 
     private float listSearchByValue(List<Integer> list) {
-        return track(() -> list.indexOf(random.nextInt(list.size() - 1)));
+        final int SEARCH_VALUE = random.nextInt(list.size());
+        return track(() -> list.indexOf(SEARCH_VALUE));
     }
 }
