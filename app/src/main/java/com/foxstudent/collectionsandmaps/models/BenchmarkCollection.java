@@ -132,7 +132,8 @@ public class BenchmarkCollection implements Benchmark {
     }
 
     private float listSearchByValue(List<Integer> list) {
-        final int SEARCH_VALUE = random.nextInt(list.size());
-        return track(() -> list.indexOf(SEARCH_VALUE));
+        final int randomPos = random.nextInt(list.size());
+        list.add(randomPos, 1);
+        return track(() -> list.indexOf(1));
     }
 }
