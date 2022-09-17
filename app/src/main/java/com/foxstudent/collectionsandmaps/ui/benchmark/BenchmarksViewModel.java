@@ -1,6 +1,5 @@
 package com.foxstudent.collectionsandmaps.ui.benchmark;
 
-import android.os.Handler;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -11,17 +10,21 @@ import com.foxstudent.collectionsandmaps.models.Benchmark;
 import com.foxstudent.collectionsandmaps.models.Cell;
 
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicReference;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class BenchmarksViewModel extends ViewModel {
 
     private final MutableLiveData<List<Cell>> cells = new MutableLiveData<>();
     private final MutableLiveData<Integer> toastMessage = new MutableLiveData<>();
-    private final Handler handler = new Handler();
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final Benchmark benchmark;
-    private ThreadPoolExecutor service;
 
     public BenchmarksViewModel(Benchmark benchmark) {
         this.benchmark = benchmark;
@@ -46,20 +49,16 @@ public class BenchmarksViewModel extends ViewModel {
         cells.setValue(cellList);
     }
 
-    public void executeBenchmarks(int operation, int threadPool) {
-        service = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadPool);
-
+    public void executeBenchmarks(int operation) {
         final List<Cell> cellList = cells.getValue();
-        for (Cell cell : cellList) {
-            service.submit(() -> {
-                final float result = benchmark.measureTime(cell, operation);
-                handler.post(() -> updateCell(cellList.indexOf(cell), result, false));
-                if (service.getCompletedTaskCount() == cellList.size() - 1) {
-                    handler.post(() -> setToastMessage(R.string.calc_complete));
-                }
-            });
-        }
-        service.shutdown();
+        final AtomicReference<Float> result = new AtomicReference<>();
+        final Disposable disposable = Observable.fromIterable(cellList)
+                .subscribeOn(Schedulers.io())
+                .doOnNext(cell -> result.set(benchmark.measureTime(cell, operation)))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> toastMessage.setValue(R.string.calc_complete))
+                .subscribe(cell -> updateCell(cellList.indexOf(cell), result.get(), false));
+        compositeDisposable.add(disposable);
     }
 
     public void hideProgressBar() {
@@ -70,32 +69,28 @@ public class BenchmarksViewModel extends ViewModel {
         cells.setValue(cellList);
     }
 
-    public void shutDown() {
-        service.shutdownNow();
-        hideProgressBar();
-        setToastMessage(R.string.calc_stop);
-    }
 
-    public void onButtonPressed(String operation, String threadPool) {
-        if (service != null && service.getActiveCount() > 0) {
-            shutDown();
+    public void onButtonPressed(String operation) {
+        if (toastMessage.getValue() == R.string.calc_start) {
+            compositeDisposable.clear();
+            hideProgressBar();
+            toastMessage.setValue(R.string.calc_stop);
             return;
         }
-        if (operation.isEmpty() || threadPool.isEmpty()) {
+        if (operation.isEmpty()) {
             setToastMessage(R.string.empty_field);
         } else {
-            int operationToInt, threadPoolToInt;
+            int operationToInt;
             try {
                 operationToInt = Integer.parseInt(operation);
-                threadPoolToInt = Integer.parseInt(threadPool);
             } catch (NumberFormatException exception) {
                 setToastMessage(R.string.must_be_numeric);
                 return;
             }
-            if (operationToInt <= 0 || threadPoolToInt <= 0) {
+            if (operationToInt <= 0) {
                 setToastMessage(R.string.must_be_positive);
             } else {
-                executeBenchmarks(operationToInt, threadPoolToInt);
+                executeBenchmarks(operationToInt);
                 cells.setValue(benchmark.createCells(0, true));
                 setToastMessage(R.string.calc_start);
             }
@@ -112,5 +107,11 @@ public class BenchmarksViewModel extends ViewModel {
 
     public void setToastMessage(int message) {
         toastMessage.setValue(message);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        compositeDisposable.dispose();
     }
 }

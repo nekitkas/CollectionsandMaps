@@ -65,11 +65,9 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
                 }
                 if (message == R.string.calc_stop) {
                     binding.button.setText(R.string.start);
-                    binding.button.setClickable(true);
                 }
                 if (message == R.string.calc_complete) {
                     binding.button.setText(R.string.start);
-                    binding.button.setClickable(true);
                 }
             }
         });
@@ -81,8 +79,7 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         final String operationInput = binding.etOperations.getText().toString().trim();
-        final String threadInput = binding.etThreads.getText().toString().trim();
-        model.onButtonPressed(operationInput, threadInput);
+        model.onButtonPressed(operationInput);
     }
 
     @Override
