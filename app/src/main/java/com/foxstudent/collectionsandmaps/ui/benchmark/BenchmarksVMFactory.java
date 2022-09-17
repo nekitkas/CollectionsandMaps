@@ -26,13 +26,13 @@ public class BenchmarksVMFactory implements ViewModelProvider.Factory {
 
     BenchmarksVMFactory(int type) {
         this.type = type;
+        component.inject(this);
     }
 
     @SuppressWarnings("unchecked")
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        component.inject(this);
         if (modelClass.isAssignableFrom(BenchmarksViewModel.class)) {
             if (type == 0)
                 return (T) new BenchmarksViewModel(collectionBenchmark);

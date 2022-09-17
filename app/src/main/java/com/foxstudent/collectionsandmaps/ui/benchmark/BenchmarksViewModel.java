@@ -10,7 +10,8 @@ import com.foxstudent.collectionsandmaps.models.Benchmark;
 import com.foxstudent.collectionsandmaps.models.Cell;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
@@ -49,15 +50,15 @@ public class BenchmarksViewModel extends ViewModel {
         cells.setValue(cellList);
     }
 
-    public void executeBenchmarks(int operation) {
+    public void executeBenchmarks(int operation, int threadPool) {
         final List<Cell> cellList = cells.getValue();
-        final AtomicReference<Float> result = new AtomicReference<>();
+        final ConcurrentHashMap<Integer, Float> result = new ConcurrentHashMap<>();
         final Disposable disposable = Observable.fromIterable(cellList)
-                .subscribeOn(Schedulers.io())
-                .doOnNext(cell -> result.set(benchmark.measureTime(cell, operation)))
+                .subscribeOn(Schedulers.from(Executors.newFixedThreadPool(threadPool)))
+                .doOnNext(cell -> result.put(cellList.indexOf(cell), benchmark.measureTime(cell, operation)))
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(() -> toastMessage.setValue(R.string.calc_complete))
-                .subscribe(cell -> updateCell(cellList.indexOf(cell), result.get(), false));
+                .doOnComplete(() -> setToastMessage(R.string.calc_complete))
+                .subscribe(cell -> updateCell(cellList.indexOf(cell), result.get(cellList.indexOf(cell)), false));
         compositeDisposable.add(disposable);
     }
 
@@ -70,27 +71,28 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
 
-    public void onButtonPressed(String operation) {
+    public void onButtonPressed(String operation, String threadPool) {
         if (toastMessage.getValue() == R.string.calc_start) {
             compositeDisposable.clear();
             hideProgressBar();
-            toastMessage.setValue(R.string.calc_stop);
+            setToastMessage(R.string.calc_stop);
             return;
         }
-        if (operation.isEmpty()) {
+        if (operation.isEmpty() || threadPool.isEmpty()) {
             setToastMessage(R.string.empty_field);
         } else {
-            int operationToInt;
+            int operationToInt, threadPoolToInt;
             try {
                 operationToInt = Integer.parseInt(operation);
+                threadPoolToInt = Integer.parseInt(threadPool);
             } catch (NumberFormatException exception) {
                 setToastMessage(R.string.must_be_numeric);
                 return;
             }
-            if (operationToInt <= 0) {
+            if (operationToInt <= 0 || threadPoolToInt <= 0) {
                 setToastMessage(R.string.must_be_positive);
             } else {
-                executeBenchmarks(operationToInt);
+                executeBenchmarks(operationToInt, threadPoolToInt);
                 cells.setValue(benchmark.createCells(0, true));
                 setToastMessage(R.string.calc_start);
             }

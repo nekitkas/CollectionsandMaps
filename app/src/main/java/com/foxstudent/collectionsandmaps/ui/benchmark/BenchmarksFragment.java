@@ -79,7 +79,8 @@ public class BenchmarksFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         final String operationInput = binding.etOperations.getText().toString().trim();
-        model.onButtonPressed(operationInput);
+        final String threadPoolInput = binding.etOperations.getText().toString().trim();
+        model.onButtonPressed(operationInput, threadPoolInput);
     }
 
     @Override

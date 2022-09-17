@@ -3,6 +3,7 @@
     <string name="app_name">Collections and Maps</string>
     <string name="button">Start</string>
     <string name="operations">Operations</string>
+    <string name="threads">Threads</string>
     <string name="stop">Stop</string>
     <string name="start">Start</string>
     <string name="empty_field">Empty field</string>
